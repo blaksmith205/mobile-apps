@@ -20,19 +20,20 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/button6"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:onClick="viewMessageButton"
                 android:text="@string/message_btn" />
 
             <Button
-                android:id="@+id/button7"
+                android:id="@+id/bt_instant_text"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:onClick="textAlarmButton"
                 android:text="@string/instant_text_btn" />
         </LinearLayout>
 
@@ -43,11 +44,12 @@
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
         android:clickable="true"
         android:focusable="true"
+        android:onClick="textAlarmButton"
+        app:maxImageSize="32dp"
         app:srcCompat="@android:drawable/ic_input_add" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
