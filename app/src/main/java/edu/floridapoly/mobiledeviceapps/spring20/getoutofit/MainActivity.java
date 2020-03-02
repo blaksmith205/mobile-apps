@@ -8,7 +8,7 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String EXTRA_INSTANT_MESSAGE= "INSTANT_MESSAGE";
+    public static final String EXTRA_INSTANT_MESSAGE= "INSTANT_MESSAGE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

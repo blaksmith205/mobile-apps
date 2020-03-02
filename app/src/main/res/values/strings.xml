@@ -21,5 +21,6 @@
     <string name="time_label">Time</string>
     <string name="date_hint">MM/DD/YYYY</string>
     <string name="time_hint">HH:MM</string>
+    <string name="send_instant_message_btn">Send Message</string>
 
 </resources>

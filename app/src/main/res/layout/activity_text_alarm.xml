@@ -75,18 +75,20 @@
     </TableLayout>
 
     <RadioGroup
+        android:id="@+id/rg_message_options"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <RadioButton
+            android:id="@+id/rb_instant_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/intant_message_rb" />
 
         <RadioButton
-            android:id="@+id/radioButton2"
+            android:id="@+id/rb_delayed_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
