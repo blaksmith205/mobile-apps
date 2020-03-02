@@ -6,8 +6,20 @@
     <string name="instant_text_btn">Instant Text</string>
 
     <!--  CreateMessageActivity  -->
-    <string name="excuse_summary">Excuse Summary</string>
+    <string name="excuse_summary_label">Excuse Summary</string>
+    <string name="summary_hint">Summary</string>
     <string name="save_message_btn">Save Message</string>
     <string name="message_hint">Message</string>
+
+    <!--  TextAlarmActivity  -->
+    <string name="from_label">From</string>
+    <string name="message_label">Message</string>
+    <string name="message_spinner_first_entry">Created Messages</string>
+    <string name="intant_message_rb">Instant Message</string>
+    <string name="timed_message_rb">Send on Date</string>
+    <string name="date_label">Date</string>
+    <string name="time_label">Time</string>
+    <string name="date_hint">MM/DD/YYYY</string>
+    <string name="time_hint">HH:MM</string>
 
 </resources>

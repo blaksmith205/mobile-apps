@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/excuse_summary"
+            android:text="@string/excuse_summary_label"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <View
@@ -33,9 +33,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:autofillHints="@string/excuse_summary"
+            android:autofillHints="@string/excuse_summary_label"
             android:ems="10"
-            android:hint="@string/excuse_summary"
+            android:hint="@string/summary_hint"
             android:inputType="textPersonName"
             android:singleLine="true" />
     </LinearLayout>
@@ -54,7 +54,7 @@
         android:singleLine="false" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/bt_save_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
