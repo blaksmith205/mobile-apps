@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">Get Out Of It</string>
+
+    <!--  MainActivity  -->
     <string name="message_btn">View Messages</string>
     <string name="instant_text_btn">Instant Text</string>
+
+    <!--  CreateMessageActivity  -->
+    <string name="excuse_summary">Excuse Summary</string>
+    <string name="save_message_btn">Save Message</string>
+    <string name="message_hint">Message</string>
 
 </resources>
