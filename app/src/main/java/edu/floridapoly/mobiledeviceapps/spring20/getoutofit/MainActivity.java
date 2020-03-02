@@ -1,14 +1,14 @@
 package edu.floridapoly.mobiledeviceapps.spring20.getoutofit;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 public class MainActivity extends AppCompatActivity {
 
-    public static final String EXTRA_INSTANT_MESSAGE= "INSTANT_MESSAGE";
+    public static final String EXTRA_INSTANT_MESSAGE = "INSTANT_MESSAGE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
