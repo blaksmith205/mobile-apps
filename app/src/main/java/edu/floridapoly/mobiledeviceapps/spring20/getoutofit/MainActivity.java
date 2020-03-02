@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void viewMessageButton(View view) {
-        Intent intent = new Intent(this, CreateMessageActivity.class);
+        Intent intent = new Intent(this, ViewMessagesActivity.class);
         startActivity(intent);
     }
 

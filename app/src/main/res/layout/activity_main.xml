@@ -50,6 +50,6 @@
         android:clickable="true"
         android:focusable="true"
         android:onClick="textAlarmButton"
-        app:maxImageSize="32dp"
+        app:maxImageSize="@dimen/floating_button_image_size"
         app:srcCompat="@android:drawable/ic_input_add" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
