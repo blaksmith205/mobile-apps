@@ -60,6 +60,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/padding"
         android:layout_weight="0"
+        android:onClick="saveMessageButton"
         android:padding="@dimen/padding"
         android:text="@string/save_message_btn" />
 

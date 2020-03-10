@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.TableLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,6 +13,7 @@ public class TextAlarmActivity extends AppCompatActivity {
 
     private TableLayout mDateTimeTable;
     private Button mBottomButton;
+    private boolean isInstantText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +29,8 @@ public class TextAlarmActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup group, int radioButtonId) {
                 // Use the radio button id to change how the ui looks
-                redrawUI(radioButtonId == R.id.rb_instant_message);
+                isInstantText = radioButtonId == R.id.rb_instant_message;
+                redrawUI();
             }
         });
 
@@ -40,12 +43,30 @@ public class TextAlarmActivity extends AppCompatActivity {
             } else {
                 messageOptions.check(R.id.rb_delayed_message);
             }
-            // Update the UI to match the selection
-            redrawUI(isInstantText);
+            // UI is updated from OnCheckListener
         }
+
+        mBottomButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isInstantText)
+                    instantlySendText();
+                else
+                    saveTextAlarm();
+            }
+        });
     }
 
-    private void redrawUI(boolean isInstantText) {
+    private void instantlySendText() {
+        Toast.makeText(this, "Extract message and send instantly", Toast.LENGTH_SHORT).show();
+    }
+
+    private void saveTextAlarm() {
+        Toast.makeText(this, "Extract message and date/time and save to DB. " +
+                "Create a text message to be sent at desired time", Toast.LENGTH_LONG).show();
+    }
+
+    private void redrawUI() {
         if (isInstantText) {
             mDateTimeTable.setVisibility(View.GONE);
             mBottomButton.setText(R.string.send_instant_message_btn);
