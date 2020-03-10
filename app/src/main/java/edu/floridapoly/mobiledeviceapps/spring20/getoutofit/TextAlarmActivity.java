@@ -43,21 +43,22 @@ public class TextAlarmActivity extends AppCompatActivity {
             } else {
                 messageOptions.check(R.id.rb_delayed_message);
             }
-            // UI is updated from OnCheckListener
+            // UI is updated from OnCheckChangedListener
         }
 
+        // Change click functionality of button depending on radio button
         mBottomButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isInstantText)
-                    instantlySendText();
+                    sendInstantText();
                 else
                     saveTextAlarm();
             }
         });
     }
 
-    private void instantlySendText() {
+    private void sendInstantText() {
         Toast.makeText(this, "Extract message and send instantly", Toast.LENGTH_SHORT).show();
     }
 
