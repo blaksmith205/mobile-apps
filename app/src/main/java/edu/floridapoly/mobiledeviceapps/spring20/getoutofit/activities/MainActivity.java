@@ -1,10 +1,12 @@
-package edu.floridapoly.mobiledeviceapps.spring20.getoutofit;
+package edu.floridapoly.mobiledeviceapps.spring20.getoutofit.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.R;
 
 public class MainActivity extends AppCompatActivity {
 

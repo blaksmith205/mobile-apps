@@ -1,4 +1,4 @@
-package edu.floridapoly.mobiledeviceapps.spring20.getoutofit;
+package edu.floridapoly.mobiledeviceapps.spring20.getoutofit.activities;
 
 import android.os.Bundle;
 import android.view.View;
@@ -8,6 +8,9 @@ import android.widget.TableLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.R;
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.activities.MainActivity;
 
 public class TextAlarmActivity extends AppCompatActivity {
 
