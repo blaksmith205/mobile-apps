@@ -29,8 +29,7 @@
         android:hint="@string/formatted_message_summary" />
 
     <View
-        android:id="@+id/view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/padding" />
+        android:layout_height="@dimen/rv_view_padding" />
 
 </LinearLayout>

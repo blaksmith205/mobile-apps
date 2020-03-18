@@ -2,4 +2,5 @@
 <resources>
     <dimen name="floating_button_image_size">32dp</dimen>
     <dimen name="padding">12dp</dimen>
+    <dimen name="rv_view_padding">8dp</dimen>
 </resources>

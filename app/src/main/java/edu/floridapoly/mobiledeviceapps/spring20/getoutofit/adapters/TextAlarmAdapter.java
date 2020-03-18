@@ -83,8 +83,8 @@ public class TextAlarmAdapter extends RecyclerView.Adapter<TextAlarmAdapter.Text
         return mAlarmEntries;
     }
 
-    public void setAlarmEntries(List<TextAlarmData> mAlarmEntries) {
-        this.mAlarmEntries = new ArrayList<>(mAlarmEntries);
+    public void setAlarmEntries(List<TextAlarmData> textAlarms) {
+        this.mAlarmEntries = new ArrayList<>(textAlarms);
         notifyDataSetChanged();
     }
 
