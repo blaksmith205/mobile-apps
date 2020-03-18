@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="floating_button_image_size">32dp</dimen>
-    <dimen name="padding">12dp</dimen>
-    <dimen name="rv_view_padding">8dp</dimen>
+    <dimen name="padding">8dp</dimen>
+    <dimen name="rv_view_padding">2dp</dimen>
+    <dimen name="rv_side_padding">8dp</dimen>
 </resources>
