@@ -9,13 +9,16 @@ public class TextAlarmData {
     private String from;
     private String summary;
     private String message;
+    private int id;
 
-    public TextAlarmData(Date date, String time, String from, String summary, String message) {
+    // TODO: Set id as the id from the database
+    public TextAlarmData(Date date, String time, String from, String summary, String message, int id) {
         this.date = date;
         this.time = time;
         this.from = from;
         this.summary = summary;
         this.message = message;
+        this.id = id;
     }
 
     public Date getDate() {
@@ -56,5 +59,13 @@ public class TextAlarmData {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

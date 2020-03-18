@@ -9,7 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,24 +16,24 @@ import java.util.List;
 
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.R;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.TextAlarmData;
-import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.GeneralTouchHelper;
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.IChangeItem;
 
 public class TextAlarmAdapter extends RecyclerView.Adapter<TextAlarmAdapter.TextAlarmViewHolder> {
 
-    public static final TextAlarmData[] testAlarms= {
-            new TextAlarmData(new Date(), "10:00 am", "Robert", "Summary 1", ""),
-            new TextAlarmData(new Date(), "11:00 am", "Will", "Summary 2", ""),
-            new TextAlarmData(new Date(), "12:00 pm", "Leon", "Summary 3", "")
+    public static final TextAlarmData[] testAlarms = {
+            new TextAlarmData(new Date(), "10:00 am", "Robert", "Summary 1", "", 0),
+            new TextAlarmData(new Date(), "11:00 am", "Will", "Summary 2", "", 1),
+            new TextAlarmData(new Date(), "12:00 pm", "Leon", "Summary 3", "", 2)
     };
 
-    private List<TextAlarmData> mAlarmEntries;
-    private GeneralTouchHelper.IChangeHandler<TextAlarmData> changeHandler;
+    private ArrayList<TextAlarmData> mAlarmEntries;
+    private IChangeItem<TextAlarmData> mChangeHandler;
 
     private Context mContext;
 
-    public TextAlarmAdapter(GeneralTouchHelper.IChangeHandler<TextAlarmData> changeHandler, Context context) {
-        this.changeHandler = changeHandler;
+    public TextAlarmAdapter(Context context, IChangeItem<TextAlarmData> touchHandler) {
         this.mContext = context;
+        this.mChangeHandler = touchHandler;
     }
 
     /**
@@ -85,7 +84,18 @@ public class TextAlarmAdapter extends RecyclerView.Adapter<TextAlarmAdapter.Text
     }
 
     public void setAlarmEntries(List<TextAlarmData> mAlarmEntries) {
-        this.mAlarmEntries = mAlarmEntries;
+        this.mAlarmEntries = new ArrayList<>(mAlarmEntries);
+        notifyDataSetChanged();
+    }
+
+    public TextAlarmData getTextAlarm(int index) {
+        return mAlarmEntries.get(index);
+    }
+
+    // Removes the TextAlarm from the internal list.
+    // TODO: Replace with either auto update of data with Room, or update the database and retrieve from the database again
+    public void removeElement(int index) {
+        mAlarmEntries.remove(index);
         notifyDataSetChanged();
     }
 
@@ -103,11 +113,13 @@ public class TextAlarmAdapter extends RecyclerView.Adapter<TextAlarmAdapter.Text
             timeView = itemView.findViewById(R.id.tv_text_alarm_rv_time);
             fromView = itemView.findViewById(R.id.tv_text_alarm_rv_from);
             summaryView = itemView.findViewById(R.id.tv_text_alarm_rv_summary);
+
+            itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            changeHandler.onEdit(mAlarmEntries.get(getAdapterPosition()));
+            mChangeHandler.editItem(mAlarmEntries.get(getAdapterPosition()));
         }
     }
 }

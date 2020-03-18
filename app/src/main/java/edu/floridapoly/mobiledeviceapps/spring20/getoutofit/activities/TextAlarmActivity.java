@@ -10,7 +10,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.R;
-import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.activities.MainActivity;
 
 public class TextAlarmActivity extends AppCompatActivity {
 

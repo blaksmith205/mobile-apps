@@ -3,21 +3,23 @@ package edu.floridapoly.mobiledeviceapps.spring20.getoutofit.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.R;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.adapters.TextAlarmAdapter;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.TextAlarmData;
-import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.GeneralTouchHelper;
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.IChangeItem;
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.SwipeCallback;
 
-public class MainActivity extends AppCompatActivity implements GeneralTouchHelper.IChangeHandler<TextAlarmData> {
+public class MainActivity extends AppCompatActivity implements
+        IChangeItem<TextAlarmData> {
 
     public static final String EXTRA_INSTANT_MESSAGE = "INSTANT_MESSAGE";
 
@@ -38,6 +40,9 @@ public class MainActivity extends AppCompatActivity implements GeneralTouchHelpe
         // Initialize adapter and attach to recycler
         mAdapter = new TextAlarmAdapter(this, this);
         mRecyclerView.setAdapter(mAdapter);
+
+        // Setup swipe functionality
+        new ItemTouchHelper(new SwipeCallback<TextAlarmData>(this)).attachToRecyclerView(mRecyclerView);
 
         // TODO: Display real data from database
         // Add fake data to display
@@ -61,12 +66,15 @@ public class MainActivity extends AppCompatActivity implements GeneralTouchHelpe
     }
 
     @Override
-    public void onDelete(TextAlarmData object) {
-
+    public void deleteItem(int dataPosition) {
+        // TODO: Delete the object from the database
+        TextAlarmData data = mAdapter.getTextAlarm(dataPosition);
+        mAdapter.removeElement(dataPosition);
     }
 
     @Override
-    public void onEdit(TextAlarmData object) {
-
+    public void editItem(TextAlarmData data) {
+        // TODO: send an Intent to TextAlarmActivity with the data from object.
+        Toast.makeText(MainActivity.this, String.format("Clicked on TextAlarm: %d", data.getId()), Toast.LENGTH_SHORT).show();
     }
 }
