@@ -7,17 +7,24 @@ public class TextAlarmData {
     private Date date;
     private String time;
     private String from;
-    private String summary;
-    private String message;
+    private MessageData message;
     private int id;
+
+    public TextAlarmData(Date date, String time, String from, MessageData message) {
+        this.date = date;
+        this.time = time;
+        this.from = from;
+        this.message = message;
+        id = -1;
+    }
 
     // TODO: Set id as the id from the database
     public TextAlarmData(Date date, String time, String from, String summary, String message, int id) {
         this.date = date;
         this.time = time;
         this.from = from;
-        this.summary = summary;
-        this.message = message;
+        // TODO: link the message from database using proper message id
+        this.message = new MessageData(summary, message);
         this.id = id;
     }
 
@@ -45,19 +52,11 @@ public class TextAlarmData {
         this.from = from;
     }
 
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
-    public String getMessage() {
+    public MessageData getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(MessageData message) {
         this.message = message;
     }
 

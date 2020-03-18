@@ -6,6 +6,13 @@ public class MessageData {
     private String message;
     private int id;
 
+    public MessageData(String summary, String message) {
+        this.summary = summary;
+        this.message = message;
+        id = -1;
+    }
+
+    // TODO: set the id from the database
     public MessageData(String summary, String message, int id) {
         this.summary = summary;
         this.message = message;

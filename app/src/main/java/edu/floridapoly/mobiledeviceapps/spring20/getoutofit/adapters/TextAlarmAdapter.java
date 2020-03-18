@@ -64,7 +64,7 @@ public class TextAlarmAdapter extends RecyclerView.Adapter<TextAlarmAdapter.Text
         holder.dateView.setText(dateFormat.format(data.getDate()));
         holder.timeView.setText(data.getTime());
         holder.fromView.setText(data.getFrom());
-        holder.summaryView.setText(data.getSummary());
+        holder.summaryView.setText(data.getMessage().getSummary());
 
         // Add the position of the TextAlarmData, in case it is needed again
         holder.dateView.setTag(position);
