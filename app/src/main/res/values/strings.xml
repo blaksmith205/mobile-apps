@@ -23,4 +23,11 @@
     <string name="time_hint">HH:MM</string>
     <string name="send_instant_message_btn">Send Message</string>
 
+    <!--  Strings to format in code  -->
+    <string name="formatted_date">Date: %1$s</string>
+    <string name="formatted_time">Time: %1$s</string>
+    <string name="formatted_from">From: %1$s</string>
+    <string name="formatted_message_summary">Summary: %1$s</string>
+    <string name="formatted_message">Message: %1$s</string>
+
 </resources>

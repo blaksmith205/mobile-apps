@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_text_alarm_rv_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/formatted_date" />
+
+    <TextView
+        android:id="@+id/tv_text_alarm_rv_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/formatted_time" />
+
+    <TextView
+        android:id="@+id/tv_text_alarm_rv_from"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/formatted_from" />
+
+    <TextView
+        android:id="@+id/tv_text_alarm_rv_summary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/formatted_message_summary" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/rv_view_padding" />
+
+</LinearLayout>
