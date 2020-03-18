@@ -10,15 +10,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.R;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.TextAlarmData;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.IChangeItem;
 
-public class TextAlarmAdapter extends RecyclerView.Adapter<TextAlarmAdapter.TextAlarmViewHolder> {
+public class TextAlarmAdapter extends GeneralAdapter<TextAlarmData, TextAlarmAdapter.TextAlarmViewHolder> {
 
     public static final TextAlarmData[] testAlarms = {
             new TextAlarmData(new Date(), "10:00 am", "Robert", "Summary 1", "", 0),
@@ -26,14 +24,8 @@ public class TextAlarmAdapter extends RecyclerView.Adapter<TextAlarmAdapter.Text
             new TextAlarmData(new Date(), "12:00 pm", "Leon", "Summary 3", "", 2)
     };
 
-    private ArrayList<TextAlarmData> mAlarmEntries;
-    private IChangeItem<TextAlarmData> mChangeHandler;
-
-    private Context mContext;
-
     public TextAlarmAdapter(Context context, IChangeItem<TextAlarmData> touchHandler) {
-        this.mContext = context;
-        this.mChangeHandler = touchHandler;
+        super(context, touchHandler);
     }
 
     /**
@@ -57,7 +49,7 @@ public class TextAlarmAdapter extends RecyclerView.Adapter<TextAlarmAdapter.Text
      */
     @Override
     public void onBindViewHolder(@NonNull TextAlarmViewHolder holder, int position) {
-        TextAlarmData data = mAlarmEntries.get(position);
+        TextAlarmData data = mEntries.get(position);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
 
         // Set the data in the TextViews
@@ -68,35 +60,6 @@ public class TextAlarmAdapter extends RecyclerView.Adapter<TextAlarmAdapter.Text
 
         // Add the position of the TextAlarmData, in case it is needed again
         holder.dateView.setTag(position);
-    }
-
-    @Override
-    public int getItemCount() {
-        if (mAlarmEntries == null)
-            return 0;
-        return mAlarmEntries.size();
-    }
-
-    // Getters and setters
-
-    public List<TextAlarmData> getAlarmEntries() {
-        return mAlarmEntries;
-    }
-
-    public void setAlarmEntries(List<TextAlarmData> textAlarms) {
-        this.mAlarmEntries = new ArrayList<>(textAlarms);
-        notifyDataSetChanged();
-    }
-
-    public TextAlarmData getTextAlarm(int index) {
-        return mAlarmEntries.get(index);
-    }
-
-    // Removes the TextAlarm from the internal list.
-    // TODO: Replace with either auto update of data with Room, or update the database and retrieve from the database again
-    public void removeElement(int index) {
-        mAlarmEntries.remove(index);
-        notifyDataSetChanged();
     }
 
     class TextAlarmViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -119,7 +82,7 @@ public class TextAlarmAdapter extends RecyclerView.Adapter<TextAlarmAdapter.Text
 
         @Override
         public void onClick(View v) {
-            mChangeHandler.editItem(mAlarmEntries.get(getAdapterPosition()));
+            mChangeHandler.editItem(mEntries.get(getAdapterPosition()));
         }
     }
 }
