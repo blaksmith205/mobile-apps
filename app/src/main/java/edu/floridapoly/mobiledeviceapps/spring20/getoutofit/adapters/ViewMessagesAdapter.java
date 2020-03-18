@@ -14,11 +14,6 @@ import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.MessageData;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.IChangeItem;
 
 public class ViewMessagesAdapter extends GeneralAdapter<MessageData, ViewMessagesAdapter.ViewMessagesViewHolder> {
-    public static final MessageData[] testMessages = {
-            new MessageData("Summary 1", "Please help!", 0),
-            new MessageData("Summary 2", "Beloved lizard died!", 1),
-            new MessageData("Summary 3", "It's an emergency!", 2)
-    };
 
     public ViewMessagesAdapter(Context context, IChangeItem<MessageData> touchHandler) {
         super(context, touchHandler);

@@ -10,19 +10,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.R;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.TextAlarmData;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.IChangeItem;
 
 public class TextAlarmAdapter extends GeneralAdapter<TextAlarmData, TextAlarmAdapter.TextAlarmViewHolder> {
-
-    public static final TextAlarmData[] testAlarms = {
-            new TextAlarmData(new Date(), "10:00 am", "Robert", "Summary 1", "", 0),
-            new TextAlarmData(new Date(), "11:00 am", "Will", "Summary 2", "", 1),
-            new TextAlarmData(new Date(), "12:00 pm", "Leon", "Summary 3", "", 2)
-    };
 
     public TextAlarmAdapter(Context context, IChangeItem<TextAlarmData> touchHandler) {
         super(context, touchHandler);

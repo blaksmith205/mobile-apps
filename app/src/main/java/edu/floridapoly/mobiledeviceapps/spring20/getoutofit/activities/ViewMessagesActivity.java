@@ -13,14 +13,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.Arrays;
 
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.R;
-import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.adapters.TextAlarmAdapter;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.adapters.ViewMessagesAdapter;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.MessageData;
-import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.TextAlarmData;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.IChangeItem;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.SwipeCallback;
 
 public class ViewMessagesActivity extends AppCompatActivity implements IChangeItem<MessageData> {
+
+    // TODO: Obtain messages from database
+    static final MessageData[] testMessages = {
+            new MessageData("Summary 1", "Please help!", 0),
+            new MessageData("Summary 2", "Beloved lizard died!", 1),
+            new MessageData("Summary 3", "It's an emergency!", 2)
+    };
 
     RecyclerView mRecyclerView;
     ViewMessagesAdapter mAdapter;
@@ -45,7 +50,7 @@ public class ViewMessagesActivity extends AppCompatActivity implements IChangeIt
 
         // TODO: Display real data from database
         // Add fake data to display
-        mAdapter.setAlarmEntries(Arrays.asList(ViewMessagesAdapter.testMessages));
+        mAdapter.setAlarmEntries(Arrays.asList(testMessages));
     }
 
     public void createMessageButton(View view) {
@@ -56,7 +61,7 @@ public class ViewMessagesActivity extends AppCompatActivity implements IChangeIt
     @Override
     public void deleteItem(int dataPosition) {
         // TODO: Delete the object from the database
-        MessageData data = mAdapter.getTextAlarm(dataPosition);
+        MessageData data = mAdapter.getEntry(dataPosition);
         mAdapter.removeElement(dataPosition);
     }
 
