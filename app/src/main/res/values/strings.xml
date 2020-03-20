@@ -1,3 +1,33 @@
 <resources>
     <string name="app_name">Get Out Of It</string>
+
+    <!--  MainActivity  -->
+    <string name="message_btn">View Messages</string>
+    <string name="instant_text_btn">Instant Text</string>
+
+    <!--  CreateMessageActivity  -->
+    <string name="excuse_summary_label">Excuse Summary</string>
+    <string name="summary_hint">Summary</string>
+    <string name="save_message_btn">Save Message</string>
+    <string name="message_hint">Message</string>
+
+    <!--  TextAlarmActivity  -->
+    <string name="from_label">From</string>
+    <string name="message_label">Message</string>
+    <string name="message_spinner_first_entry">Created Messages</string>
+    <string name="intant_message_rb">Instant Message</string>
+    <string name="timed_message_rb">Send on Date</string>
+    <string name="date_label">Date</string>
+    <string name="time_label">Time</string>
+    <string name="date_hint">MM/DD/YYYY</string>
+    <string name="time_hint">HH:MM</string>
+    <string name="send_instant_message_btn">Send Message</string>
+
+    <!--  Strings to format in code  -->
+    <string name="formatted_date">Date: %1$s</string>
+    <string name="formatted_time">Time: %1$s</string>
+    <string name="formatted_from">From: %1$s</string>
+    <string name="formatted_message_summary">Summary: %1$s</string>
+    <string name="formatted_message">Message: %1$s</string>
+
 </resources>
