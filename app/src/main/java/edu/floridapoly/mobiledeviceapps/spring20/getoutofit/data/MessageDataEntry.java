@@ -2,13 +2,17 @@ package edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data;
 
 import androidx.room.Entity;
 import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
 @Entity(tableName = "message_data")
 public class MessageDataEntry {
-
-    private String summary;
-    private String message;
+    // Unique ID of the entry
+    @PrimaryKey(autoGenerate = true)
     private int id;
+    // User entered summary
+    private String summary;
+    // User entered message
+    private String message;
 
     @Ignore
     public MessageDataEntry(String summary, String message) {
