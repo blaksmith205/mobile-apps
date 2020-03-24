@@ -49,7 +49,7 @@ public class TextAlarmAdapter extends GeneralAdapter<TextAlarmData, TextAlarmAda
         holder.dateView.setText(dateFormat.format(data.getDate()));
         holder.timeView.setText(data.getTime());
         holder.fromView.setText(data.getFrom());
-        holder.summaryView.setText(data.getMessage().getSummary());
+        holder.summaryView.setText(data.getData().getSummary());
 
         // Add the position of the TextAlarmData, in case it is needed again
         holder.dateView.setTag(position);
