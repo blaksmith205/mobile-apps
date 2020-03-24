@@ -15,17 +15,17 @@ import java.util.Date;
 
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.R;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.adapters.TextAlarmAdapter;
-import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.TextAlarmData;
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.TextAlarmDataEntry;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.IChangeItem;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.SwipeCallback;
 
-public class MainActivity extends AppCompatActivity implements IChangeItem<TextAlarmData> {
+public class MainActivity extends AppCompatActivity implements IChangeItem<TextAlarmDataEntry> {
 
     // TODO: Obtain TextAlarms from database
-    static final TextAlarmData[] testAlarms = {
-            new TextAlarmData(new Date(), "10:00 am", "Robert", "Summary 1", "", 0),
-            new TextAlarmData(new Date(), "11:00 am", "Will", "Summary 2", "", 1),
-            new TextAlarmData(new Date(), "12:00 pm", "Leon", "Summary 3", "", 2)
+    static final TextAlarmDataEntry[] testAlarms = {
+            new TextAlarmDataEntry(new Date(), "10:00 am", "Robert", "Summary 1", "", 0),
+            new TextAlarmDataEntry(new Date(), "11:00 am", "Will", "Summary 2", "", 1),
+            new TextAlarmDataEntry(new Date(), "12:00 pm", "Leon", "Summary 3", "", 2)
     };
 
     public static final String EXTRA_INSTANT_MESSAGE = "INSTANT_MESSAGE";
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements IChangeItem<TextA
         mRecyclerView.setAdapter(mAdapter);
 
         // Setup swipe functionality
-        new ItemTouchHelper(new SwipeCallback<TextAlarmData>(this)).attachToRecyclerView(mRecyclerView);
+        new ItemTouchHelper(new SwipeCallback<TextAlarmDataEntry>(this)).attachToRecyclerView(mRecyclerView);
 
         // TODO: Display real data from database
         // Add fake data to display
@@ -75,12 +75,12 @@ public class MainActivity extends AppCompatActivity implements IChangeItem<TextA
     @Override
     public void deleteItem(int dataPosition) {
         // TODO: Delete the object from the database
-        TextAlarmData data = mAdapter.getEntry(dataPosition);
+        TextAlarmDataEntry data = mAdapter.getEntry(dataPosition);
         mAdapter.removeElement(dataPosition);
     }
 
     @Override
-    public void editItem(TextAlarmData data) {
+    public void editItem(TextAlarmDataEntry data) {
         // TODO: send an Intent to TextAlarmActivity with the data from object.
         Toast.makeText(MainActivity.this, String.format("Clicked on TextAlarm: %d", data.getId()), Toast.LENGTH_SHORT).show();
     }

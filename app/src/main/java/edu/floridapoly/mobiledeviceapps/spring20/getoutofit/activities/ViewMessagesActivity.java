@@ -14,17 +14,17 @@ import java.util.Arrays;
 
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.R;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.adapters.ViewMessagesAdapter;
-import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.MessageData;
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.MessageDataEntry;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.IChangeItem;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.SwipeCallback;
 
-public class ViewMessagesActivity extends AppCompatActivity implements IChangeItem<MessageData> {
+public class ViewMessagesActivity extends AppCompatActivity implements IChangeItem<MessageDataEntry> {
 
     // TODO: Obtain messages from database
-    static final MessageData[] testMessages = {
-            new MessageData("Summary 1", "Please help!", 0),
-            new MessageData("Summary 2", "Beloved lizard died!", 1),
-            new MessageData("Summary 3", "It's an emergency!", 2)
+    static final MessageDataEntry[] testMessages = {
+            new MessageDataEntry("Summary 1", "Please help!", 0),
+            new MessageDataEntry("Summary 2", "Beloved lizard died!", 1),
+            new MessageDataEntry("Summary 3", "It's an emergency!", 2)
     };
 
     RecyclerView mRecyclerView;
@@ -46,7 +46,7 @@ public class ViewMessagesActivity extends AppCompatActivity implements IChangeIt
         mRecyclerView.setAdapter(mAdapter);
 
         // Setup swipe functionality
-        new ItemTouchHelper(new SwipeCallback<MessageData>(this)).attachToRecyclerView(mRecyclerView);
+        new ItemTouchHelper(new SwipeCallback<MessageDataEntry>(this)).attachToRecyclerView(mRecyclerView);
 
         // TODO: Display real data from database
         // Add fake data to display
@@ -61,12 +61,12 @@ public class ViewMessagesActivity extends AppCompatActivity implements IChangeIt
     @Override
     public void deleteItem(int dataPosition) {
         // TODO: Delete the object from the database
-        MessageData data = mAdapter.getEntry(dataPosition);
+        MessageDataEntry data = mAdapter.getEntry(dataPosition);
         mAdapter.removeElement(dataPosition);
     }
 
     @Override
-    public void editItem(MessageData data) {
+    public void editItem(MessageDataEntry data) {
         // TODO: send an Intent to TextAlarmActivity with the data from object.
         Toast.makeText(ViewMessagesActivity.this, String.format("Clicked on Message: %d", data.getId()), Toast.LENGTH_SHORT).show();
     }

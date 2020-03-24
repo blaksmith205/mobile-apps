@@ -1,19 +1,23 @@
 package edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data;
 
-public class MessageData {
+import androidx.room.Entity;
+import androidx.room.Ignore;
+
+@Entity(tableName = "message_data")
+public class MessageDataEntry {
 
     private String summary;
     private String message;
     private int id;
 
-    public MessageData(String summary, String message) {
+    @Ignore
+    public MessageDataEntry(String summary, String message) {
         this.summary = summary;
         this.message = message;
         id = -1;
     }
 
-    // TODO: set the id from the database
-    public MessageData(String summary, String message, int id) {
+    public MessageDataEntry(String summary, String message, int id) {
         this.summary = summary;
         this.message = message;
         this.id = id;
