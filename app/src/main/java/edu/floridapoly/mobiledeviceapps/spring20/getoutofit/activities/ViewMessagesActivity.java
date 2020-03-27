@@ -2,19 +2,21 @@ package edu.floridapoly.mobiledeviceapps.spring20.getoutofit.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Arrays;
-
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.BuildConfig;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.R;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.adapters.ViewMessagesAdapter;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.MessageDataEntry;
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.MessageDataViewModel;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.IChangeItem;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.SwipeCallback;
 
@@ -27,8 +29,12 @@ public class ViewMessagesActivity extends AppCompatActivity implements IChangeIt
             new MessageDataEntry("Summary 3", "It's an emergency!", 2)
     };
 
+    private static final String TAG = "ViewMessagesActivity";
+
     RecyclerView mRecyclerView;
     ViewMessagesAdapter mAdapter;
+
+    MessageDataViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +54,8 @@ public class ViewMessagesActivity extends AppCompatActivity implements IChangeIt
         // Setup swipe functionality
         new ItemTouchHelper(new SwipeCallback<MessageDataEntry>(this)).attachToRecyclerView(mRecyclerView);
 
-        // TODO: Display real data from database
-        // Add fake data to display
-        mAdapter.setAlarmEntries(Arrays.asList(testMessages));
+        // Display real data from database
+        setupViewModel();
     }
 
     public void createMessageButton(View view) {
@@ -69,5 +74,13 @@ public class ViewMessagesActivity extends AppCompatActivity implements IChangeIt
     public void editItem(MessageDataEntry data) {
         // TODO: send an Intent to TextAlarmActivity with the data from object.
         Toast.makeText(ViewMessagesActivity.this, String.format("Clicked on Message: %d", data.getId()), Toast.LENGTH_SHORT).show();
+    }
+
+    private void setupViewModel() {
+        viewModel = new ViewModelProvider(this).get(MessageDataViewModel.class);
+        viewModel.getEntries().observe(this, messages -> {
+            if (BuildConfig.DEBUG) Log.d(TAG, "Updating adapter to show data from ViewModel");
+            mAdapter.setEntries(messages);
+        });
     }
 }

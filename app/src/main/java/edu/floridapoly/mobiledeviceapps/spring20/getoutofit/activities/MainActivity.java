@@ -21,15 +21,13 @@ import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.SwipeCallbac
 
 public class MainActivity extends AppCompatActivity implements IChangeItem<TextAlarmDataEntry> {
 
+    public static final String EXTRA_INSTANT_MESSAGE = "INSTANT_MESSAGE";
     // TODO: Obtain TextAlarms from database
     static final TextAlarmDataEntry[] testAlarms = {
             new TextAlarmDataEntry(new Date(), "10:00 am", "Robert", "Summary 1", "", 0),
             new TextAlarmDataEntry(new Date(), "11:00 am", "Will", "Summary 2", "", 1),
             new TextAlarmDataEntry(new Date(), "12:00 pm", "Leon", "Summary 3", "", 2)
     };
-
-    public static final String EXTRA_INSTANT_MESSAGE = "INSTANT_MESSAGE";
-
     private RecyclerView mRecyclerView;
     private TextAlarmAdapter mAdapter;
 
@@ -53,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements IChangeItem<TextA
 
         // TODO: Display real data from database
         // Add fake data to display
-        mAdapter.setAlarmEntries(Arrays.asList(testAlarms));
+        mAdapter.setEntries(Arrays.asList(testAlarms));
     }
 
     public void viewMessageButton(View view) {
