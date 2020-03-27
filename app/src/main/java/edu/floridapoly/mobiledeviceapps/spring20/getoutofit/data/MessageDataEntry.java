@@ -18,7 +18,6 @@ public class MessageDataEntry {
     public MessageDataEntry(String summary, String message) {
         this.summary = summary;
         this.message = message;
-        id = -1;
     }
 
     public MessageDataEntry(String summary, String message, int id) {
