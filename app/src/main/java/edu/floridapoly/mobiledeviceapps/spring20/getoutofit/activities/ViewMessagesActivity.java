@@ -7,10 +7,13 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
 
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.BuildConfig;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.R;
@@ -25,11 +28,15 @@ import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.SwipeCallbac
 public class ViewMessagesActivity extends AppCompatActivity implements IChangeItem<MessageDataEntry> {
 
     private static final String TAG = "ViewMessagesActivity";
-
-    RecyclerView mRecyclerView;
-    ViewMessagesAdapter mAdapter;
-
-    MessageDataViewModel viewModel;
+    private ViewMessagesAdapter mAdapter;
+    private MessageDataViewModel viewModel;
+    private Observer<List<MessageDataEntry>> dataObserver = new Observer<List<MessageDataEntry>>() {
+        @Override
+        public void onChanged(List<MessageDataEntry> messages) {
+            if (BuildConfig.DEBUG) Log.d(TAG, "Updating adapter to show data from ViewModel");
+            mAdapter.setEntries(messages);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,20 +44,26 @@ public class ViewMessagesActivity extends AppCompatActivity implements IChangeIt
         setContentView(R.layout.activity_view_messages);
 
         // Obtain reference to recyclerview
-        mRecyclerView = findViewById(R.id.rv_view_messages);
+        RecyclerView recyclerView = findViewById(R.id.rv_view_messages);
 
         // Setup the recyclerview to use a linearlayout
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Initialize adapter and attach to recycler
         mAdapter = new ViewMessagesAdapter(this, this);
-        mRecyclerView.setAdapter(mAdapter);
+        recyclerView.setAdapter(mAdapter);
 
         // Setup swipe functionality
-        new ItemTouchHelper(new SwipeCallback<MessageDataEntry>(this)).attachToRecyclerView(mRecyclerView);
+        new ItemTouchHelper(new SwipeCallback<MessageDataEntry>(this)).attachToRecyclerView(recyclerView);
 
         // Display real data from database
         setupViewModel();
+    }
+
+    @Override
+    protected void onDestroy() {
+        viewModel.getEntries().removeObserver(dataObserver);
+        super.onDestroy();
     }
 
     public void createMessageButton(View view) {
@@ -63,12 +76,7 @@ public class ViewMessagesActivity extends AppCompatActivity implements IChangeIt
         MessageDataEntry data = mAdapter.getEntry(dataPosition);
 
         final DatabaseManager db = DatabaseManager.getInstance(this);
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                db.messageDataDao().delete(data);
-            }
-        });
+        AppExecutors.getInstance().diskIO().execute(() -> db.messageDataDao().delete(data));
     }
 
     @Override
@@ -79,9 +87,6 @@ public class ViewMessagesActivity extends AppCompatActivity implements IChangeIt
 
     private void setupViewModel() {
         viewModel = new ViewModelProvider(this).get(MessageDataViewModel.class);
-        viewModel.getEntries().observe(this, messages -> {
-            if (BuildConfig.DEBUG) Log.d(TAG, "Updating adapter to show data from ViewModel");
-            mAdapter.setEntries(messages);
-        });
+        viewModel.getEntries().observe(this, dataObserver);
     }
 }
