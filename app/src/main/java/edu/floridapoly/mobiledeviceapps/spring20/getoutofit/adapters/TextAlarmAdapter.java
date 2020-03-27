@@ -12,12 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.text.SimpleDateFormat;
 
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.R;
-import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.TextAlarmDataEntry;
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.TextAlarmEntry;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.IChangeItem;
 
-public class TextAlarmAdapter extends GeneralAdapter<TextAlarmDataEntry, TextAlarmAdapter.TextAlarmViewHolder> {
+public class TextAlarmAdapter extends GeneralAdapter<TextAlarmEntry, TextAlarmAdapter.TextAlarmViewHolder> {
 
-    public TextAlarmAdapter(Context context, IChangeItem<TextAlarmDataEntry> touchHandler) {
+    public TextAlarmAdapter(Context context, IChangeItem<TextAlarmEntry> touchHandler) {
         super(context, touchHandler);
     }
 
@@ -42,14 +42,16 @@ public class TextAlarmAdapter extends GeneralAdapter<TextAlarmDataEntry, TextAla
      */
     @Override
     public void onBindViewHolder(@NonNull TextAlarmViewHolder holder, int position) {
-        TextAlarmDataEntry data = mEntries.get(position);
+        TextAlarmEntry textAlarm = mEntries.get(position);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
         // Set the data in the TextViews
-        holder.dateView.setText(dateFormat.format(data.getDate()));
-        holder.timeView.setText(data.getTime());
-        holder.fromView.setText(data.getFrom());
-        holder.summaryView.setText(data.getData().getSummary());
+        holder.dateView.setText(dateFormat.format(textAlarm.getDateTime()));
+        holder.timeView.setText(timeFormat.format(textAlarm.getDateTime()));
+        holder.fromView.setText(textAlarm.getFrom());
+        // TODO: Extract actual message data from reference object
+        holder.summaryView.setText("Example Message");//textAlarm.getData().getSummary());
 
         // Add the position of the TextAlarmData, in case it is needed again
         holder.dateView.setTag(position);

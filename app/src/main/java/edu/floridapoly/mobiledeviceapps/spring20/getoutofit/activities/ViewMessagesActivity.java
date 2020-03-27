@@ -82,7 +82,7 @@ public class ViewMessagesActivity extends AppCompatActivity implements IChangeIt
     @Override
     public void editItem(MessageDataEntry data) {
         // TODO: send an Intent to CreateAlarmActivity with the data from object.
-        Toast.makeText(ViewMessagesActivity.this, String.format("Clicked on Message: %d", data.getId()), Toast.LENGTH_SHORT).show();
+        Toast.makeText(ViewMessagesActivity.this, String.format("Clicked on Message: %d", data.getMessageId()), Toast.LENGTH_SHORT).show();
     }
 
     private void setupViewModel() {

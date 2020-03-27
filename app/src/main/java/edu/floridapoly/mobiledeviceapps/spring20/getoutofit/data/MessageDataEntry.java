@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey;
 public class MessageDataEntry {
     // Unique ID of the entry
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private int messageId;
     // User entered summary
     private String summary;
     // User entered message
@@ -20,10 +20,10 @@ public class MessageDataEntry {
         this.message = message;
     }
 
-    public MessageDataEntry(String summary, String message, int id) {
+    public MessageDataEntry(int messageId, String message, String summary) {
         this.summary = summary;
         this.message = message;
-        this.id = id;
+        this.messageId = messageId;
     }
 
     public String getSummary() {
@@ -42,11 +42,11 @@ public class MessageDataEntry {
         this.message = message;
     }
 
-    public int getId() {
-        return id;
+    public int getMessageId() {
+        return messageId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setMessageId(int messageId) {
+        this.messageId = messageId;
     }
 }

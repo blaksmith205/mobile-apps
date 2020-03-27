@@ -2,34 +2,50 @@ package edu.floridapoly.mobiledeviceapps.spring20.getoutofit.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Arrays;
-import java.util.Date;
+import java.util.List;
 
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.BuildConfig;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.R;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.adapters.TextAlarmAdapter;
-import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.TextAlarmDataEntry;
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.DatabaseManager;
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.TextAlarmEntry;
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.TextAlarmViewModel;
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.AppExecutors;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.IChangeItem;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.SwipeCallback;
 
-public class MainActivity extends AppCompatActivity implements IChangeItem<TextAlarmDataEntry> {
+public class MainActivity extends AppCompatActivity implements IChangeItem<TextAlarmEntry> {
 
     public static final String EXTRA_INSTANT_MESSAGE = "INSTANT_MESSAGE";
-    // TODO: Obtain TextAlarms from database
-    static final TextAlarmDataEntry[] testAlarms = {
-            new TextAlarmDataEntry(new Date(), "10:00 am", "Robert", "Summary 1", "", 0),
-            new TextAlarmDataEntry(new Date(), "11:00 am", "Will", "Summary 2", "", 1),
-            new TextAlarmDataEntry(new Date(), "12:00 pm", "Leon", "Summary 3", "", 2)
-    };
+    //    // TODO: Obtain TextAlarms from database
+//    static final TextAlarmEntry[] testAlarms = {
+//            new TextAlarmEntry(new Date(), "10:00 am", "Robert", "Summary 1", "", 0),
+//            new TextAlarmEntry(new Date(), "11:00 am", "Will", "Summary 2", "", 1),
+//            new TextAlarmEntry(new Date(), "12:00 pm", "Leon", "Summary 3", "", 2)
+//    };
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     private RecyclerView mRecyclerView;
     private TextAlarmAdapter mAdapter;
+    private TextAlarmViewModel viewModel;
+    private Observer<List<TextAlarmEntry>> dataObserver = new Observer<List<TextAlarmEntry>>() {
+        @Override
+        public void onChanged(List<TextAlarmEntry> alarms) {
+            if (BuildConfig.DEBUG) Log.d(TAG, "Updating adapter to show data from ViewModel");
+            mAdapter.setEntries(alarms);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +63,17 @@ public class MainActivity extends AppCompatActivity implements IChangeItem<TextA
         mRecyclerView.setAdapter(mAdapter);
 
         // Setup swipe functionality
-        new ItemTouchHelper(new SwipeCallback<TextAlarmDataEntry>(this)).attachToRecyclerView(mRecyclerView);
+        new ItemTouchHelper(new SwipeCallback<TextAlarmEntry>(this)).attachToRecyclerView(mRecyclerView);
 
-        // TODO: Display real data from database
+        // Display real data from database
         // Add fake data to display
-        mAdapter.setEntries(Arrays.asList(testAlarms));
+        setupViewModel();
+    }
+
+    @Override
+    protected void onDestroy() {
+        viewModel.getEntries().removeObserver(dataObserver);
+        super.onDestroy();
     }
 
     public void viewMessageButton(View view) {
@@ -72,13 +94,20 @@ public class MainActivity extends AppCompatActivity implements IChangeItem<TextA
 
     @Override
     public void deleteItem(int dataPosition) {
-        // TODO: Delete the object from the database
-        TextAlarmDataEntry data = mAdapter.getEntry(dataPosition);
+        TextAlarmEntry data = mAdapter.getEntry(dataPosition);
+
+        final DatabaseManager db = DatabaseManager.getInstance(this);
+        AppExecutors.getInstance().diskIO().execute(() -> db.textAlarmDao().delete(data));
     }
 
     @Override
-    public void editItem(TextAlarmDataEntry data) {
+    public void editItem(TextAlarmEntry data) {
         // TODO: send an Intent to TextAlarmActivity with the data from object.
-        Toast.makeText(MainActivity.this, String.format("Clicked on TextAlarm: %d", data.getId()), Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, String.format("Clicked on TextAlarm: %d", data.getTextAlarmId()), Toast.LENGTH_SHORT).show();
+    }
+
+    private void setupViewModel() {
+        viewModel = new ViewModelProvider(this).get(TextAlarmViewModel.class);
+        viewModel.getEntries().observe(this, dataObserver);
     }
 }

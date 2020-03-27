@@ -16,7 +16,7 @@ public interface MessageDataDao {
     @Query("SELECT * FROM message_data")
     LiveData<List<MessageDataEntry>> loadMessages();
 
-    @Query("SELECT * FROM message_data WHERE id = :id")
+    @Query("SELECT * FROM message_data WHERE messageId = :id")
     MessageDataEntry loadDataById(int id);
 
     @Insert
