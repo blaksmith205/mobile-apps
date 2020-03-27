@@ -6,10 +6,12 @@ import android.util.Log;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.BuildConfig;
 
-@Database(entities = {MessageDataEntry.class}, version = 1, exportSchema = false)
+@Database(entities = {MessageDataEntry.class, TextAlarmEntry.class}, version = 2, exportSchema = false)
+@TypeConverters({Converters.class})
 public abstract class DatabaseManager extends RoomDatabase {
     private static final String TAG = DatabaseManager.class.getSimpleName();
     private static final Object LOCK = new Object();
@@ -32,4 +34,6 @@ public abstract class DatabaseManager extends RoomDatabase {
     }
 
     public abstract MessageDataDao messageDataDao();
+
+    public abstract TextAlarmDao textAlarmDao();
 }
