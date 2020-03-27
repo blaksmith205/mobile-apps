@@ -40,11 +40,4 @@ public abstract class GeneralAdapter<T, VH extends RecyclerView.ViewHolder> exte
     public T getEntry(int index) {
         return mEntries.get(index);
     }
-
-    // Removes the TextAlarm from the internal list.
-    // TODO: Replace with either auto update of data with Room, or update the database and retrieve from the database again
-    public void removeElement(int index) {
-        mEntries.remove(index);
-        notifyDataSetChanged();
-    }
 }

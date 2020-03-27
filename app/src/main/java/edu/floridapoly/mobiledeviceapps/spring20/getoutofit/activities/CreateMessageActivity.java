@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.R;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.DatabaseManager;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.MessageDataEntry;
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.AppExecutors;
 
 public class CreateMessageActivity extends AppCompatActivity {
 
@@ -30,7 +31,7 @@ public class CreateMessageActivity extends AppCompatActivity {
         // Insert into database
         final MessageDataEntry dataEntry = new MessageDataEntry(summaryText, messageText);
         final DatabaseManager db = DatabaseManager.getInstance(this);
-        db.getQueryExecutor().execute(new Runnable() {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
                 db.messageDataDao().insert(dataEntry);

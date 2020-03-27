@@ -74,7 +74,6 @@ public class MainActivity extends AppCompatActivity implements IChangeItem<TextA
     public void deleteItem(int dataPosition) {
         // TODO: Delete the object from the database
         TextAlarmDataEntry data = mAdapter.getEntry(dataPosition);
-        mAdapter.removeElement(dataPosition);
     }
 
     @Override

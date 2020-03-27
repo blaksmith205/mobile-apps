@@ -15,19 +15,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.BuildConfig;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.R;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.adapters.ViewMessagesAdapter;
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.DatabaseManager;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.MessageDataEntry;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.MessageDataViewModel;
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.AppExecutors;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.IChangeItem;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.SwipeCallback;
 
 public class ViewMessagesActivity extends AppCompatActivity implements IChangeItem<MessageDataEntry> {
-
-    // TODO: Obtain messages from database
-    static final MessageDataEntry[] testMessages = {
-            new MessageDataEntry("Summary 1", "Please help!", 0),
-            new MessageDataEntry("Summary 2", "Beloved lizard died!", 1),
-            new MessageDataEntry("Summary 3", "It's an emergency!", 2)
-    };
 
     private static final String TAG = "ViewMessagesActivity";
 
@@ -65,14 +60,20 @@ public class ViewMessagesActivity extends AppCompatActivity implements IChangeIt
 
     @Override
     public void deleteItem(int dataPosition) {
-        // TODO: Delete the object from the database
         MessageDataEntry data = mAdapter.getEntry(dataPosition);
-        mAdapter.removeElement(dataPosition);
+
+        final DatabaseManager db = DatabaseManager.getInstance(this);
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                db.messageDataDao().delete(data);
+            }
+        });
     }
 
     @Override
     public void editItem(MessageDataEntry data) {
-        // TODO: send an Intent to TextAlarmActivity with the data from object.
+        // TODO: send an Intent to CreateAlarmActivity with the data from object.
         Toast.makeText(ViewMessagesActivity.this, String.format("Clicked on Message: %d", data.getId()), Toast.LENGTH_SHORT).show();
     }
 
