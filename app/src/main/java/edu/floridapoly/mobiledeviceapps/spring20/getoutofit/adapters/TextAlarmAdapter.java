@@ -43,8 +43,8 @@ public class TextAlarmAdapter extends GeneralAdapter<TextAlarmEntry, TextAlarmAd
     @Override
     public void onBindViewHolder(@NonNull TextAlarmViewHolder holder, int position) {
         TextAlarmEntry entry = mEntries.get(position);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
 
         // Set the data in the TextViews
         holder.dateView.setText(dateFormat.format(entry.getDateTime()));
