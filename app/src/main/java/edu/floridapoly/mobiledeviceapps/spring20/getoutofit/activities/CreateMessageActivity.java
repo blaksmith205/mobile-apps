@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.R;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.DatabaseManager;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.MessageDataEntry;
-import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.AppExecutors;
 
 public class CreateMessageActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE_DATA_ID = "PASSED_MESSAGE_DATA_ID";
@@ -67,22 +66,8 @@ public class CreateMessageActivity extends AppCompatActivity {
             return;
         }
 
-        final DatabaseManager db = DatabaseManager.getInstance(this);
-        if (messageData == null) {
-            // Insert into database
-            final MessageDataEntry dataEntry = new MessageDataEntry(summaryText, messageText);
-            AppExecutors.getInstance().diskIO().execute(() -> db.messageDataDao().insert(dataEntry));
-        } else {
-            // Only update if user changed text
-            if (messageData.getSummary().equals(summaryText) && messageData.getMessage().equals(messageText)){
-                finish();
-                return; // Stop executing more code cause finish doesn't block
-            }
-            // Update database
-            messageData.setSummary(summaryText);
-            messageData.setMessage(messageText);
-            AppExecutors.getInstance().diskIO().execute(() -> db.messageDataDao().update(messageData));
-        }
+        // Insert or Update the message
+        DatabaseManager.getInstance(this).insertOrUpdateMessage(messageData, summaryText, messageText);
 
         // Return to calling Activity
         finish();
