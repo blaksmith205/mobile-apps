@@ -18,7 +18,7 @@ public class CreateMessageActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE_DATA_MESSAGE = "PASSED_MESSAGE_DATA_MESSAGE";
 
     // Constant for default message id to be used when not in update mode
-    private static final int DEFAULT_MESSAGE_ID = -1;
+    public static final int DEFAULT_MESSAGE_ID = -1;
 
     private EditText mSummary;
     private EditText mMessage;
