@@ -10,12 +10,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.R;
-import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.MessageData;
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.MessageDataEntry;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.IChangeItem;
 
-public class ViewMessagesAdapter extends GeneralAdapter<MessageData, ViewMessagesAdapter.ViewMessagesViewHolder> {
+public class ViewMessagesAdapter extends GeneralAdapter<MessageDataEntry, ViewMessagesAdapter.ViewMessagesViewHolder> {
 
-    public ViewMessagesAdapter(Context context, IChangeItem<MessageData> touchHandler) {
+    public ViewMessagesAdapter(Context context, IChangeItem<MessageDataEntry> touchHandler) {
         super(context, touchHandler);
     }
 
@@ -40,7 +40,7 @@ public class ViewMessagesAdapter extends GeneralAdapter<MessageData, ViewMessage
      */
     @Override
     public void onBindViewHolder(@NonNull ViewMessagesAdapter.ViewMessagesViewHolder holder, int position) {
-        MessageData data = mEntries.get(position);
+        MessageDataEntry data = mEntries.get(position);
 
         // Set the data in the TextViews
         holder.summaryView.setText(data.getSummary());
