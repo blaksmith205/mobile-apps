@@ -3,25 +3,31 @@ package edu.floridapoly.mobiledeviceapps.spring20.getoutofit.activities;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.BuildConfig;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.R;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.Converters;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.DatabaseManager;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.MessageDataEntry;
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.MessageDataViewModel;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.TextAlarmEntry;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.AppExecutors;
 
@@ -31,6 +37,7 @@ public class TextAlarmActivity extends AppCompatActivity {
 
     private EditText mFrom;
     private EditText mSummary;
+    private Spinner mSummarySpinner;
     private EditText mDate;
     private EditText mTime;
     private EditText mMessage;
@@ -38,6 +45,8 @@ public class TextAlarmActivity extends AppCompatActivity {
     private TableLayout mDateTimeTable;
     private Button mBottomButton;
     private boolean isInstantText;
+
+    private MessageDataEntry selectedMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +57,7 @@ public class TextAlarmActivity extends AppCompatActivity {
         mDateTimeTable = findViewById(R.id.table_date_time);
         mBottomButton = findViewById(R.id.bt_create_alarm_main);
         mFrom = findViewById(R.id.ev_create_alarm_from);
+        mSummarySpinner = findViewById(R.id.create_alarm_summary_spinner);
         mSummary = findViewById(R.id.ev_create_alarm_summary);
         mDate = findViewById(R.id.ev_create_alarm_date);
         mTime = findViewById(R.id.ev_create_alarm_time);
@@ -65,7 +75,7 @@ public class TextAlarmActivity extends AppCompatActivity {
 
         // Obtain the Extra from Main Activity
         if (getIntent().hasExtra(MainActivity.EXTRA_INSTANT_MESSAGE)) {
-            boolean isInstantText = getIntent().getBooleanExtra(MainActivity.EXTRA_INSTANT_MESSAGE, false);
+            isInstantText = getIntent().getBooleanExtra(MainActivity.EXTRA_INSTANT_MESSAGE, false);
             // Make sure the Instant Message Radio Button is selected
             if (isInstantText) {
                 messageOptions.check(R.id.rb_instant_message);
@@ -75,29 +85,42 @@ public class TextAlarmActivity extends AppCompatActivity {
             // UI is updated from OnCheckChangedListener
         }
 
-        // Change click functionality of button depending on radio button
-        mBottomButton.setOnClickListener(new View.OnClickListener() {
+        // Populate spinner with message summaries
+        MessageDataViewModel viewModel = new ViewModelProvider(this).get(MessageDataViewModel.class);
+        viewModel.getEntries().observe(this, new Observer<List<MessageDataEntry>>() {
             @Override
-            public void onClick(View v) {
-                if (isInstantText)
-                    sendInstantText();
+            public void onChanged(List<MessageDataEntry> entries) {
+                viewModel.getEntries().removeObserver(this);
+                ArrayAdapter<MessageDataEntry> adapter = new ArrayAdapter<MessageDataEntry>(
+                        TextAlarmActivity.this, android.R.layout.simple_spinner_item,
+                        entries.toArray(new MessageDataEntry[0]));
+                mSummarySpinner.setAdapter(adapter);
+
+                // Enable spinner if User created messages
+                if (adapter.isEmpty())
+                    mSummarySpinner.setEnabled(false);
                 else
-                    saveTextAlarm();
+                    mSummarySpinner.setEnabled(true);
             }
         });
 
-        // TODO: Populate spinner with message summaries
-        // TODO: When summary is clicked, populate the summary and message boxes
-        // TODO: Extract main MessageData save/update functionality from CreateMessageActivity
+        // Populate message data when an item is selected from dropdown
+        mSummarySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedMessage = (MessageDataEntry) parent.getItemAtPosition(position);
+                mSummary.setText(selectedMessage.getSummary());
+                mMessage.setText(selectedMessage.getMessage());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
-    private void sendInstantText() {
-        // Make sure all EditTexts are filled
-        if (isAllDataEmpty()) return;
-        Toast.makeText(this, "Extract message and send instantly", Toast.LENGTH_SHORT).show();
-    }
-
-    private void saveTextAlarm() {
+    public void onButtonClicked(View view) {
         // Make sure all EditTexts are filled
         if (isAllDataEmpty()) return;
 
@@ -119,11 +142,11 @@ public class TextAlarmActivity extends AppCompatActivity {
             }
         }
 
-        // TODO: Edit MessageDataEntry if user edited a previous message
-        // TODO: Save a newly created MessageDataEntry if user created a new message
-        MessageDataEntry data = new MessageDataEntry(summaryText, messageText);
-        // Insert into database
-        TextAlarmEntry alarm = new TextAlarmEntry(date, fromText, data);
+        // Insert a new message or Update the selected message into proper table
+        selectedMessage = DatabaseManager.getInstance(this).insertOrUpdateMessage(selectedMessage, summaryText, messageText);
+
+        // Insert alarm into database
+        TextAlarmEntry alarm = new TextAlarmEntry(date, fromText, selectedMessage);
         final DatabaseManager db = DatabaseManager.getInstance(this);
         AppExecutors.getInstance().diskIO().execute(() -> db.textAlarmDao().insert(alarm));
 

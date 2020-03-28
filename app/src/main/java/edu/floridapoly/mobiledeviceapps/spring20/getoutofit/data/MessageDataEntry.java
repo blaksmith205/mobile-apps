@@ -1,5 +1,6 @@
 package edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -48,5 +49,11 @@ public class MessageDataEntry {
 
     public void setMessageId(int messageId) {
         this.messageId = messageId;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return summary;
     }
 }

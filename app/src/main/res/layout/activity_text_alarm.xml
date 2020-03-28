@@ -165,5 +165,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
         android:layout_weight="0"
+        android:onClick="onButtonClicked"
         android:text="@string/save_message_btn" />
 </LinearLayout>

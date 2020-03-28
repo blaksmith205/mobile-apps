@@ -48,20 +48,22 @@ public abstract class DatabaseManager extends RoomDatabase {
      * @param newSummary  New summary to update the messageData with
      * @param newMessage  New message to update the messageData with
      */
-    public void insertOrUpdateMessage(MessageDataEntry messageData, String newSummary, String newMessage) {
+    public MessageDataEntry insertOrUpdateMessage(MessageDataEntry messageData, String newSummary, String newMessage) {
         if (messageData == null) {
             // Insert into database
             final MessageDataEntry dataEntry = new MessageDataEntry(newSummary, newMessage);
             AppExecutors.getInstance().diskIO().execute(() -> sInstance.messageDataDao().insert(dataEntry));
+            return dataEntry;
         } else {
             // Only update if user changed text
             if (messageData.getSummary().equals(newSummary) && messageData.getMessage().equals(newMessage)) {
-                return; // Don't do anything
+                return messageData; // Don't do anything
             }
             // Update database
             messageData.setSummary(newSummary);
             messageData.setMessage(newMessage);
             AppExecutors.getInstance().diskIO().execute(() -> sInstance.messageDataDao().update(messageData));
+            return messageData;
         }
     }
 }
