@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
@@ -81,8 +80,11 @@ public class ViewMessagesActivity extends AppCompatActivity implements IChangeIt
 
     @Override
     public void editItem(MessageDataEntry data) {
-        // TODO: send an Intent to CreateAlarmActivity with the data from object.
-        Toast.makeText(ViewMessagesActivity.this, String.format("Clicked on Message: %d", data.getMessageId()), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, CreateMessageActivity.class);
+        intent.putExtra(CreateMessageActivity.EXTRA_MESSAGE_DATA_ID, data.getMessageId());
+        intent.putExtra(CreateMessageActivity.EXTRA_MESSAGE_DATA_SUMMARY, data.getSummary());
+        intent.putExtra(CreateMessageActivity.EXTRA_MESSAGE_DATA_MESSAGE, data.getMessage());
+        startActivity(intent);
     }
 
     private void setupViewModel() {

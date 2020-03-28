@@ -1,7 +1,9 @@
 package edu.floridapoly.mobiledeviceapps.spring20.getoutofit.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,9 +14,16 @@ import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.MessageDataEntr
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.AppExecutors;
 
 public class CreateMessageActivity extends AppCompatActivity {
+    public static final String EXTRA_MESSAGE_DATA_ID = "PASSED_MESSAGE_DATA_ID";
+    public static final String EXTRA_MESSAGE_DATA_SUMMARY = "PASSED_MESSAGE_DATA_SUMMARY";
+    public static final String EXTRA_MESSAGE_DATA_MESSAGE = "PASSED_MESSAGE_DATA_MESSAGE";
+
+    // Constant for default message id to be used when not in update mode
+    private static final int DEFAULT_MESSAGE_ID = -1;
 
     private EditText mSummary;
     private EditText mMessage;
+    private MessageDataEntry messageData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +32,25 @@ public class CreateMessageActivity extends AppCompatActivity {
 
         mSummary = findViewById(R.id.ev_excuse_summary);
         mMessage = findViewById(R.id.ev_message);
+        Button button = findViewById(R.id.bt_save_message);
+
+        Intent intent = getIntent();
+        if (intent == null) {
+            return;
+        }
+        // Get message id if one exists
+        int mMessageId = intent.getIntExtra(EXTRA_MESSAGE_DATA_ID, DEFAULT_MESSAGE_ID);
+
+        // Check for update id
+        if (mMessageId != DEFAULT_MESSAGE_ID) {
+            button.setText(getString(R.string.update_message_btn));
+            // Obtain the data
+            String summary = intent.getStringExtra(EXTRA_MESSAGE_DATA_SUMMARY);
+            String message = intent.getStringExtra(EXTRA_MESSAGE_DATA_MESSAGE);
+            messageData = new MessageDataEntry(mMessageId, summary, message);
+            // Populate the UI
+            populateUI();
+        }
     }
 
     public void saveMessageButton(View view) {
@@ -39,12 +67,29 @@ public class CreateMessageActivity extends AppCompatActivity {
             return;
         }
 
-        // Insert into database
-        final MessageDataEntry dataEntry = new MessageDataEntry(summaryText, messageText);
         final DatabaseManager db = DatabaseManager.getInstance(this);
-        AppExecutors.getInstance().diskIO().execute(() -> db.messageDataDao().insert(dataEntry));
+        if (messageData == null) {
+            // Insert into database
+            final MessageDataEntry dataEntry = new MessageDataEntry(summaryText, messageText);
+            AppExecutors.getInstance().diskIO().execute(() -> db.messageDataDao().insert(dataEntry));
+        } else {
+            // Only update if user changed text
+            if (messageData.getSummary().equals(summaryText) && messageData.getMessage().equals(messageText)){
+                finish();
+                return; // Stop executing more code cause finish doesn't block
+            }
+            // Update database
+            messageData.setSummary(summaryText);
+            messageData.setMessage(messageText);
+            AppExecutors.getInstance().diskIO().execute(() -> db.messageDataDao().update(messageData));
+        }
 
         // Return to calling Activity
         finish();
+    }
+
+    private void populateUI() {
+        mSummary.setText(messageData.getSummary());
+        mMessage.setText(messageData.getMessage());
     }
 }

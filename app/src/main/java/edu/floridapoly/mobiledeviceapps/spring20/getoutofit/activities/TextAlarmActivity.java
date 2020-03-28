@@ -84,6 +84,10 @@ public class TextAlarmActivity extends AppCompatActivity {
                     saveTextAlarm();
             }
         });
+
+        // TODO: Populate spinner with message summaries
+        // TODO: When summary is clicked, populate the summary and message boxes
+        // TODO: Extract main MessageData save/update functionality from CreateMessageActivity
     }
 
     private void sendInstantText() {

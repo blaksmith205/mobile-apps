@@ -9,6 +9,7 @@
     <string name="excuse_summary_label">Excuse Summary</string>
     <string name="summary_hint">Summary</string>
     <string name="save_message_btn">Save Message</string>
+    <string name="update_message_btn">Update Message</string>
     <string name="message_hint">Message</string>
 
     <!--  TextAlarmActivity  -->
