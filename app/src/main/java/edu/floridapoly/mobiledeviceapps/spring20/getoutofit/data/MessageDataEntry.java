@@ -20,10 +20,10 @@ public class MessageDataEntry {
         this.message = message;
     }
 
-    public MessageDataEntry(int messageId, String message, String summary) {
+    public MessageDataEntry(int messageId, String summary, String message) {
+        this.messageId = messageId;
         this.summary = summary;
         this.message = message;
-        this.messageId = messageId;
     }
 
     public String getSummary() {

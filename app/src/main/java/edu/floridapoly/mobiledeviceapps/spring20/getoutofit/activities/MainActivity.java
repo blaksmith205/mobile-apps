@@ -28,12 +28,6 @@ import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.SwipeCallbac
 public class MainActivity extends AppCompatActivity implements IChangeItem<TextAlarmEntry> {
 
     public static final String EXTRA_INSTANT_MESSAGE = "INSTANT_MESSAGE";
-    //    // TODO: Obtain TextAlarms from database
-//    static final TextAlarmEntry[] testAlarms = {
-//            new TextAlarmEntry(new Date(), "10:00 am", "Robert", "Summary 1", "", 0),
-//            new TextAlarmEntry(new Date(), "11:00 am", "Will", "Summary 2", "", 1),
-//            new TextAlarmEntry(new Date(), "12:00 pm", "Leon", "Summary 3", "", 2)
-//    };
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private RecyclerView mRecyclerView;
@@ -94,16 +88,16 @@ public class MainActivity extends AppCompatActivity implements IChangeItem<TextA
 
     @Override
     public void deleteItem(int dataPosition) {
-        TextAlarmEntry data = mAdapter.getEntry(dataPosition);
+        TextAlarmEntry entry = mAdapter.getEntry(dataPosition);
 
         final DatabaseManager db = DatabaseManager.getInstance(this);
-        AppExecutors.getInstance().diskIO().execute(() -> db.textAlarmDao().delete(data));
+        AppExecutors.getInstance().diskIO().execute(() -> db.textAlarmDao().delete(entry));
     }
 
     @Override
-    public void editItem(TextAlarmEntry data) {
+    public void editItem(TextAlarmEntry entry) {
         // TODO: send an Intent to TextAlarmActivity with the data from object.
-        Toast.makeText(MainActivity.this, String.format("Clicked on TextAlarm: %d", data.getTextAlarmId()), Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, String.format("Clicked on TextAlarm: %d", entry.getAlarmId()), Toast.LENGTH_SHORT).show();
     }
 
     private void setupViewModel() {

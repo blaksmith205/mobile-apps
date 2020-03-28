@@ -1,6 +1,7 @@
 package edu.floridapoly.mobiledeviceapps.spring20.getoutofit.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +16,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.BuildConfig;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.R;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.Converters;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.DatabaseManager;
@@ -23,9 +25,14 @@ import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.TextAlarmEntry;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.AppExecutors;
 
 public class TextAlarmActivity extends AppCompatActivity {
+    private static final String TAG = TextAlarmEntry.class.getSimpleName();
+    private static final DateFormat dateTimeFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm");
 
-    private static final DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy");
-    private static final DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
+    private EditText mFrom;
+    private EditText mSummary;
+    private EditText mData;
+    private EditText mTime;
+    private EditText mMessage;
 
     private TableLayout mDateTimeTable;
     private Button mBottomButton;
@@ -39,6 +46,11 @@ public class TextAlarmActivity extends AppCompatActivity {
         // Get the objects
         mDateTimeTable = findViewById(R.id.table_date_time);
         mBottomButton = findViewById(R.id.bt_create_alarm_main);
+        mFrom = findViewById(R.id.ev_create_alarm_from);
+        mSummary = findViewById(R.id.ev_create_alarm_summary);
+        mData = findViewById(R.id.ev_create_alarm_date);
+        mTime = findViewById(R.id.ev_create_alarm_time);
+        mMessage = findViewById(R.id.ev_create_alarm_message);
 
         RadioGroup messageOptions = findViewById(R.id.rg_message_options);
         messageOptions.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -79,36 +91,32 @@ public class TextAlarmActivity extends AppCompatActivity {
     }
 
     private void saveTextAlarm() {
-        EditText from = findViewById(R.id.ev_create_alarm_from);
-        EditText summary = findViewById(R.id.ev_create_alarm_summary);
-        EditText dateView = findViewById(R.id.ev_create_alarm_date);
-        EditText timeView = findViewById(R.id.ev_create_alarm_time);
-        EditText message = findViewById(R.id.ev_create_alarm_message);
-
         // Obtain the text from the boxes
         // TODO: Check if the strings are empty or not
-        String fromText = summary.getText().toString();
-        String summaryText = message.getText().toString();
+        String fromText = mFrom.getText().toString();
+        String summaryText = mSummary.getText().toString();
+        String dateTime = String.format("%s %s", mData.getText().toString(),
+                mTime.getText().toString());
+        String messageText = mMessage.getText().toString();
+
         Date date = Converters.DEFAULT_DATE;
-        // TODO: Clean up code and logic and add reference to MessageData
         if (isInstantText) {
             date = new Date(System.currentTimeMillis());
         } else {
             try {
-                date = dateFormatter.parse(dateView.getText().toString());
-                Date time = timeFormatter.parse(timeView.getText().toString());
-                if (time != null && date != null)
-                    date.setTime(time.getTime());
+                date = dateTimeFormatter.parse(dateTime);
             } catch (ParseException | NullPointerException e) {
-                e.printStackTrace();
+                if (BuildConfig.DEBUG) Log.e(TAG, "Exception when parsing data:\n", e);
             }
         }
-        String messageText = message.getText().toString();
-        final MessageDataEntry data = new MessageDataEntry(summaryText, messageText);
+
+        // TODO: Edit MessageDataEntry if user edited a previous message
+        // TODO: Save a newly created MessageDataEntry if user created a new message
+        MessageDataEntry data = new MessageDataEntry(summaryText, messageText);
         // Insert into database
-        final TextAlarmEntry dataEntry = new TextAlarmEntry(date, fromText, data);
+        TextAlarmEntry alarm = new TextAlarmEntry(date, fromText, data);
         final DatabaseManager db = DatabaseManager.getInstance(this);
-        AppExecutors.getInstance().diskIO().execute(() -> db.textAlarmDao().insert(dataEntry));
+        AppExecutors.getInstance().diskIO().execute(() -> db.textAlarmDao().insert(alarm));
 
         // Return to calling Activity
         finish();

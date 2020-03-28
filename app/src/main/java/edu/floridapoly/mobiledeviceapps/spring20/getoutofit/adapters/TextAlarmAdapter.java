@@ -42,16 +42,15 @@ public class TextAlarmAdapter extends GeneralAdapter<TextAlarmEntry, TextAlarmAd
      */
     @Override
     public void onBindViewHolder(@NonNull TextAlarmViewHolder holder, int position) {
-        TextAlarmEntry textAlarm = mEntries.get(position);
+        TextAlarmEntry entry = mEntries.get(position);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
         // Set the data in the TextViews
-        holder.dateView.setText(dateFormat.format(textAlarm.getDateTime()));
-        holder.timeView.setText(timeFormat.format(textAlarm.getDateTime()));
-        holder.fromView.setText(textAlarm.getFrom());
-        // TODO: Extract actual message data from reference object
-        holder.summaryView.setText("Example Message");//textAlarm.getData().getSummary());
+        holder.dateView.setText(dateFormat.format(entry.getDateTime()));
+        holder.timeView.setText(timeFormat.format(entry.getDateTime()));
+        holder.fromView.setText(entry.getSenderInfo());
+        holder.summaryView.setText(entry.getMessageData().getSummary());
 
         // Add the position of the TextAlarmData, in case it is needed again
         holder.dateView.setTag(position);
