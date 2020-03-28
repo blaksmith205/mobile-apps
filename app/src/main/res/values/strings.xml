@@ -34,4 +34,5 @@
     <!--  Error Messages/Hints  -->
     <string name="message_empty_error">Message is required</string>
     <string name="summary_empty_error">Summary is required</string>
+    <string name="generic_empty_error">This field is required</string>
 </resources>

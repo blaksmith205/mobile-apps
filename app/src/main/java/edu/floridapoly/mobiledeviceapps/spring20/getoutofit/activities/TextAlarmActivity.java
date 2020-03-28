@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TableLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,7 +31,7 @@ public class TextAlarmActivity extends AppCompatActivity {
 
     private EditText mFrom;
     private EditText mSummary;
-    private EditText mData;
+    private EditText mDate;
     private EditText mTime;
     private EditText mMessage;
 
@@ -48,7 +49,7 @@ public class TextAlarmActivity extends AppCompatActivity {
         mBottomButton = findViewById(R.id.bt_create_alarm_main);
         mFrom = findViewById(R.id.ev_create_alarm_from);
         mSummary = findViewById(R.id.ev_create_alarm_summary);
-        mData = findViewById(R.id.ev_create_alarm_date);
+        mDate = findViewById(R.id.ev_create_alarm_date);
         mTime = findViewById(R.id.ev_create_alarm_time);
         mMessage = findViewById(R.id.ev_create_alarm_message);
 
@@ -91,15 +92,19 @@ public class TextAlarmActivity extends AppCompatActivity {
     }
 
     private void sendInstantText() {
+        // Make sure all EditTexts are filled
+        if (isAllDataEmpty()) return;
         Toast.makeText(this, "Extract message and send instantly", Toast.LENGTH_SHORT).show();
     }
 
     private void saveTextAlarm() {
+        // Make sure all EditTexts are filled
+        if (isAllDataEmpty()) return;
+
         // Obtain the text from the boxes
-        // TODO: Check if the strings are empty or not
         String fromText = mFrom.getText().toString();
         String summaryText = mSummary.getText().toString();
-        String dateTime = String.format("%s %s", mData.getText().toString(),
+        String dateTime = String.format("%s %s", mDate.getText().toString(),
                 mTime.getText().toString());
         String messageText = mMessage.getText().toString();
 
@@ -134,5 +139,27 @@ public class TextAlarmActivity extends AppCompatActivity {
             mDateTimeTable.setVisibility(View.VISIBLE);
             mBottomButton.setText(R.string.save_message_btn);
         }
+    }
+
+    private boolean isAllDataEmpty() {
+        String errorString = getString(R.string.generic_empty_error);
+        boolean dataInAll = isTextViewFilled(mFrom, errorString);
+        dataInAll = isTextViewFilled(mSummary, errorString);
+        if (!isInstantText) {
+            dataInAll = isTextViewFilled(mDate, errorString);
+            // No time field means 00:00 for HH:mm
+        }
+
+        dataInAll = isTextViewFilled(mMessage, errorString);
+
+        return !dataInAll;
+    }
+
+    private boolean isTextViewFilled(TextView textView, String errorString) {
+        if (textView.getText().toString().isEmpty()) {
+            textView.setError(errorString);
+            return false;
+        }
+        return true;
     }
 }
