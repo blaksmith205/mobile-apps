@@ -30,4 +30,7 @@
     <string name="formatted_message_summary">Summary: %1$s</string>
     <string name="formatted_message">Message: %1$s</string>
 
+    <!--  Error Messages/Hints  -->
+    <string name="message_empty_error">Message is required</string>
+    <string name="summary_empty_error">Summary is required</string>
 </resources>

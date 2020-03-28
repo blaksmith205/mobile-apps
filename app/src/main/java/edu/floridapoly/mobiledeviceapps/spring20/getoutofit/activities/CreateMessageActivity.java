@@ -13,30 +13,36 @@ import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.AppExecutors
 
 public class CreateMessageActivity extends AppCompatActivity {
 
+    private EditText mSummary;
+    private EditText mMessage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_message);
+
+        mSummary = findViewById(R.id.ev_excuse_summary);
+        mMessage = findViewById(R.id.ev_message);
     }
 
     public void saveMessageButton(View view) {
-        EditText summary = findViewById(R.id.ev_excuse_summary);
-        EditText message = findViewById(R.id.ev_message);
-
         // Obtain the text from the boxes
-        // TODO: Check if the strings are empty or not
-        String summaryText = summary.getText().toString();
-        String messageText = message.getText().toString();
+        String summaryText = mSummary.getText().toString();
+        String messageText = mMessage.getText().toString();
+
+        if (messageText.isEmpty()) {
+            mMessage.setError(getString(R.string.message_empty_error));
+            return;
+        }
+        if (summaryText.isEmpty()) {
+            mSummary.setError(getString(R.string.summary_empty_error));
+            return;
+        }
 
         // Insert into database
         final MessageDataEntry dataEntry = new MessageDataEntry(summaryText, messageText);
         final DatabaseManager db = DatabaseManager.getInstance(this);
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                db.messageDataDao().insert(dataEntry);
-            }
-        });
+        AppExecutors.getInstance().diskIO().execute(() -> db.messageDataDao().insert(dataEntry));
 
         // Return to calling Activity
         finish();
