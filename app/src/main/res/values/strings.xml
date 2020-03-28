@@ -23,6 +23,8 @@
     <string name="date_hint">MM/DD/YYYY</string>
     <string name="time_hint">HH:MM</string>
     <string name="send_instant_message_btn">Send Message</string>
+    <string name="save_text_alarm_btn">Save Alarm</string>
+    <string name="update_text_alarm_btn">Update Alarm</string>
 
     <!--  Strings to format in code  -->
     <string name="formatted_date">Date: %1$s</string>

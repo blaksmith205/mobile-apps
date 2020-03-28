@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
@@ -96,8 +95,15 @@ public class MainActivity extends AppCompatActivity implements IChangeItem<TextA
 
     @Override
     public void editItem(TextAlarmEntry entry) {
-        // TODO: send an Intent to TextAlarmActivity with the data from object.
-        Toast.makeText(MainActivity.this, String.format("Clicked on TextAlarm: %d", entry.getAlarmId()), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, TextAlarmActivity.class);
+        intent.putExtra(EXTRA_INSTANT_MESSAGE, false);
+        intent.putExtra(TextAlarmActivity.EXTRA_TEXT_ALARM_ID, entry.getAlarmId());
+        intent.putExtra(TextAlarmActivity.EXTRA_TEXT_ALARM_SENDER, entry.getSenderInfo());
+        intent.putExtra(TextAlarmActivity.EXTRA_TEXT_ALARM_DATE, entry.getDateTime().getTime());
+        intent.putExtra(CreateMessageActivity.EXTRA_MESSAGE_DATA_ID, entry.getMessageData().getMessageId());
+        intent.putExtra(CreateMessageActivity.EXTRA_MESSAGE_DATA_SUMMARY, entry.getMessageData().getSummary());
+        intent.putExtra(CreateMessageActivity.EXTRA_MESSAGE_DATA_MESSAGE, entry.getMessageData().getMessage());
+        startActivity(intent);
     }
 
     private void setupViewModel() {

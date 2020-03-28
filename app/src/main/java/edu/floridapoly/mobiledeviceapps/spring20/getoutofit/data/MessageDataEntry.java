@@ -1,6 +1,7 @@
 package edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -55,5 +56,16 @@ public class MessageDataEntry {
     @Override
     public String toString() {
         return summary;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null)
+            return false;
+        if (!(obj instanceof MessageDataEntry))
+            return false;
+        MessageDataEntry other = (MessageDataEntry) obj;
+        return other.getMessageId() == messageId && other.getSummary().equals(summary) &&
+                other.getMessage().equals(message);
     }
 }
