@@ -55,8 +55,11 @@ public abstract class DatabaseManager extends RoomDatabase {
     public MessageDataEntry insertOrUpdateMessage(MessageDataEntry messageData, String newSummary, String newMessage) {
         if (messageData == null) {
             // Insert into database
-            final MessageDataEntry dataEntry = new MessageDataEntry(newSummary, newMessage);
-            AppExecutors.getInstance().diskIO().execute(() -> sInstance.messageDataDao().insert(dataEntry));
+            MessageDataEntry dataEntry = new MessageDataEntry(newSummary, newMessage);
+            AppExecutors.getInstance().diskIO().execute(() -> {
+                long id = sInstance.messageDataDao().insert(dataEntry);
+                dataEntry.setMessageId((int) id);
+            });
             return dataEntry;
         } else {
             // Only update if user changed text

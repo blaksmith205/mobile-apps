@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -58,6 +60,7 @@ public class TextAlarmActivity extends AppCompatActivity {
     private TableLayout mDateTimeTable;
     private Button mBottomButton;
     private boolean isInstantText;
+    private boolean createNewMessage;
 
     private ArrayAdapter<MessageDataEntry> adapter;
     private int messageId;
@@ -106,6 +109,9 @@ public class TextAlarmActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
+        CheckBox cb = findViewById(R.id.cb_create_alarm_new_message);
+        cb.setOnCheckedChangeListener((buttonView, isChecked) -> createNewMessage = isChecked);
+
         mMessageOptions.setOnCheckedChangeListener((group, radioButtonId) -> {
             // Use the radio button id to change how the ui looks
             isInstantText = radioButtonId == R.id.rb_instant_message;
@@ -144,6 +150,8 @@ public class TextAlarmActivity extends AppCompatActivity {
                 mSummarySpinner.setAdapter(adapter);
                 // Enable spinner if User created messages
                 mSummarySpinner.setEnabled(!adapter.isEmpty());
+                // Create new message if there is no messages
+                cb.setChecked(adapter.isEmpty());
 
                 // Select the appropriate message
                 if (messageId != CreateMessageActivity.DEFAULT_MESSAGE_ID) {
@@ -187,6 +195,8 @@ public class TextAlarmActivity extends AppCompatActivity {
         fromText = mFrom.getText().toString();
         summaryText = mSummary.getText().toString();
         messageText = mMessage.getText().toString();
+
+        //TODO: Use a DatePicker and TimePicker to allow user to select dateTime easily
         String dateTime = String.format("%s %s", mDate.getText().toString(),
                 mTime.getText().toString());
         if (isInstantText) {
@@ -206,22 +216,27 @@ public class TextAlarmActivity extends AppCompatActivity {
         // Make sure data was extracted
         if (stringExtractionFailed()) return;
 
-        // Insert a new message or Update the selected message into proper table
-        selectedMessage = DatabaseManager.getInstance(this).insertOrUpdateMessage(selectedMessage, summaryText, messageText);
+        saveMessage();
 
         // TODO: Send Text message instantly
         // sendText(from, message);
         finish();
     }
 
+    private void saveMessage() {
+        // Insert a new message or Update the selected message into proper table
+        if (!createNewMessage && selectedMessage == null)
+            selectedMessage = new MessageDataEntry(CreateMessageActivity.DEFAULT_MESSAGE_ID, summaryText, messageText);
+        else if (createNewMessage && selectedMessage != null)
+            selectedMessage = null;
+        selectedMessage = DatabaseManager.getInstance(this).insertOrUpdateMessage(selectedMessage, summaryText, messageText);
+    }
+
     private void saveTextAlarm() {
         // Make sure data was extracted
         if (stringExtractionFailed()) return;
 
-        // TODO: Fix bug where a MessageDataEntry will be updated by default. No new messages will be created, because the Spinner will automatically choose the first element in the list
-        // TODO: Check if the message summary and message fields are completely different to create a new message, or have a drop-down option to create a new one.
-        // Insert a new message or Update the selected message into proper table
-        selectedMessage = DatabaseManager.getInstance(this).insertOrUpdateMessage(selectedMessage, summaryText, messageText);
+        saveMessage();
 
         // Insert or update the textAlarm
         DatabaseManager.getInstance(this).insertOrUpdateAlarm(editedAlarm, extractedDate, fromText, selectedMessage);

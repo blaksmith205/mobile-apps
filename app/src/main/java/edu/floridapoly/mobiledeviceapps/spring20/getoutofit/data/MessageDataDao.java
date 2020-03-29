@@ -20,7 +20,7 @@ public interface MessageDataDao {
     MessageDataEntry loadDataById(int id);
 
     @Insert
-    void insert(MessageDataEntry entry);
+    long insert(MessageDataEntry entry);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void update(MessageDataEntry entry);
