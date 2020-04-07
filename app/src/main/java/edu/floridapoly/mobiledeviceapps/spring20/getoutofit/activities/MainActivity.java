@@ -1,6 +1,7 @@
 package edu.floridapoly.mobiledeviceapps.spring20.getoutofit.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,9 +19,11 @@ import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.BuildConfig;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.R;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.adapters.TextAlarmAdapter;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.DatabaseManager;
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.MessageDataEntry;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.TextAlarmEntry;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.TextAlarmViewModel;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.AppExecutors;
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.AssetReader;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.IChangeItem;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.SwipeCallback;
 
@@ -58,8 +61,9 @@ public class MainActivity extends AppCompatActivity implements IChangeItem<TextA
         // Setup swipe functionality
         new ItemTouchHelper(new SwipeCallback<TextAlarmEntry>(this)).attachToRecyclerView(mRecyclerView);
 
+        // Add database info
+        populateDatabase();
         // Display real data from database
-        // Add fake data to display
         setupViewModel();
     }
 
@@ -110,5 +114,20 @@ public class MainActivity extends AppCompatActivity implements IChangeItem<TextA
     private void setupViewModel() {
         viewModel = new ViewModelProvider(this).get(TextAlarmViewModel.class);
         viewModel.getEntries().observe(this, dataObserver);
+    }
+
+    private void populateDatabase() {
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        String firstOpenedKey = getString(R.string.sp_key_first_opened);
+        boolean isFirstOpen = sharedPreferences.getBoolean(firstOpenedKey, true);
+        if (isFirstOpen) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            AppExecutors.getInstance().diskIO().execute(() -> {
+                List<MessageDataEntry> messages = AssetReader.getDefaultMessages(MainActivity.this);
+                DatabaseManager.getInstance(MainActivity.this).messageDataDao().insertUsers(messages);
+            });
+            editor.putBoolean(firstOpenedKey, false);
+            editor.apply();
+        }
     }
 }
