@@ -23,6 +23,9 @@ public interface MessageDataDao {
     @Insert
     long insert(MessageDataEntry entry);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertUsers(List<MessageDataEntry> messages);
+
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void update(MessageDataEntry entry);
 

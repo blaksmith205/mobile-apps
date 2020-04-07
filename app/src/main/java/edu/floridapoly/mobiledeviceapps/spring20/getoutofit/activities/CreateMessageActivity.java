@@ -77,7 +77,7 @@ public class CreateMessageActivity extends AppCompatActivity {
             String summary = intent.getStringExtra(EXTRA_MESSAGE_DATA_SUMMARY);
             String message = intent.getStringExtra(EXTRA_MESSAGE_DATA_MESSAGE);
             boolean template = intent.getBooleanExtra(EXTRA_MESSAGE_DATA_TEMPLATE, false);
-            updateMessage =  !template;
+            updateMessage = !template;
             // isTemplate gets updated through populateUI
             messageData = new MessageDataEntry(mMessageId, summary, message, template);
             // Populate the UI
