@@ -15,7 +15,7 @@ import java.util.List;
 public interface TextAlarmDao {
 
     @Transaction
-    @Query("SELECT * FROM text_alarms")
+    @Query("SELECT * FROM text_alarms ORDER BY dateTime ASC")
     LiveData<List<TextAlarmEntry>> loadTextAlarms();
 
     @Transaction
