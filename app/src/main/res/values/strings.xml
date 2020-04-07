@@ -9,6 +9,7 @@
     <string name="excuse_summary_label">Excuse Summary</string>
     <string name="summary_hint">Summary</string>
     <string name="save_message_btn">Save Message</string>
+    <string name="update_message_btn">Update Message</string>
     <string name="message_hint">Message</string>
 
     <!--  TextAlarmActivity  -->
@@ -22,6 +23,9 @@
     <string name="date_hint">MM/DD/YYYY</string>
     <string name="time_hint">HH:MM</string>
     <string name="send_instant_message_btn">Send Message</string>
+    <string name="save_text_alarm_btn">Save Alarm</string>
+    <string name="update_text_alarm_btn">Update Alarm</string>
+    <string name="create_new_message_cb">Create New Message</string>
 
     <!--  Strings to format in code  -->
     <string name="formatted_date">Date: %1$s</string>
@@ -30,4 +34,8 @@
     <string name="formatted_message_summary">Summary: %1$s</string>
     <string name="formatted_message">Message: %1$s</string>
 
+    <!--  Error Messages/Hints  -->
+    <string name="message_empty_error">Message is required</string>
+    <string name="summary_empty_error">Summary is required</string>
+    <string name="generic_empty_error">This field is required</string>
 </resources>

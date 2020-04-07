@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_create_alarm"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/padding"
@@ -43,7 +44,7 @@
                 android:text="@string/excuse_summary_label" />
 
             <EditText
-                android:id="@+id/ev_create_alarm_message"
+                android:id="@+id/ev_create_alarm_summary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -73,6 +74,13 @@
         </TableRow>
 
     </TableLayout>
+
+    <CheckBox
+        android:id="@+id/cb_create_alarm_new_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/create_new_message_cb" />
 
     <RadioGroup
         android:id="@+id/rg_message_options"
@@ -151,7 +159,7 @@
     </TableLayout>
 
     <MultiAutoCompleteTextView
-        android:id="@+id/ev_create_alarm_summary"
+        android:id="@+id/ev_create_alarm_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"

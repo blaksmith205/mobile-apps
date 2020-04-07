@@ -1,72 +1,248 @@
 package edu.floridapoly.mobiledeviceapps.spring20.getoutofit.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TableLayout;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.BuildConfig;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.R;
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.Converters;
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.DatabaseManager;
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.MessageDataEntry;
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.MessageDataViewModel;
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.TextAlarmEntry;
 
 public class TextAlarmActivity extends AppCompatActivity {
+    public static final String EXTRA_TEXT_ALARM_ID = "PASSED_TEXT_ALARM_ID";
+    public static final String EXTRA_TEXT_ALARM_SENDER = "PASSED_TEXT_ALARM_SENDER";
+    public static final String EXTRA_TEXT_ALARM_DATE = "PASSED_TEXT_ALARM_DATE";
+
+    // Constant for default message id to be used when not in update mode
+    private static final int DEFAULT_TEXT_ALARM_ID = -1;
+    private static final String TAG = TextAlarmEntry.class.getSimpleName();
+    private static final DateFormat dateTimeFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+
+    private EditText mFrom;
+    private EditText mSummary;
+    private Spinner mSummarySpinner;
+    private RadioGroup mMessageOptions;
+    private EditText mDate;
+    private EditText mTime;
+    private EditText mMessage;
+
+    // Extracted Strings from EditTexts
+    private String fromText;
+    private String summaryText;
+    private Date extractedDate;
+    private String messageText;
 
     private TableLayout mDateTimeTable;
     private Button mBottomButton;
     private boolean isInstantText;
+    private boolean createNewMessage;
+
+    private ArrayAdapter<MessageDataEntry> adapter;
+    private int messageId;
+    private MessageDataEntry selectedMessage;
+    private TextAlarmEntry editedAlarm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_text_alarm);
 
+        referenceObjects();
+        setupListeners();
+
+        Intent intent = getIntent();
+        int textAlarmId = intent.getIntExtra(EXTRA_TEXT_ALARM_ID, DEFAULT_TEXT_ALARM_ID);
+        messageId = intent.getIntExtra(CreateMessageActivity.EXTRA_MESSAGE_DATA_ID, CreateMessageActivity.DEFAULT_MESSAGE_ID);
+        // Check for update id
+        if (textAlarmId != DEFAULT_TEXT_ALARM_ID) {
+            // Update text for button
+            mBottomButton.setText(getString(R.string.update_text_alarm_btn));
+            // Obtain the passed data
+            String senderInfo = intent.getStringExtra(EXTRA_TEXT_ALARM_SENDER);
+            Date date = new Date(intent.getLongExtra(EXTRA_TEXT_ALARM_DATE, Converters.DEFAULT_DATE.getTime()));
+            String messageDataSummary = intent.getStringExtra(CreateMessageActivity.EXTRA_MESSAGE_DATA_SUMMARY);
+            String messageDataMessage = intent.getStringExtra(CreateMessageActivity.EXTRA_MESSAGE_DATA_MESSAGE);
+            editedAlarm = new TextAlarmEntry(textAlarmId, date, senderInfo, new MessageDataEntry(messageId, messageDataSummary, messageDataMessage));
+            // Populate the UI
+            populateUI();
+        } else {
+            if (BuildConfig.DEBUG) Log.d(TAG, "Failed to populate UI");
+        }
+    }
+
+    private void referenceObjects() {
         // Get the objects
+        mFrom = findViewById(R.id.ev_create_alarm_from);
+        mSummary = findViewById(R.id.ev_create_alarm_summary);
+        mSummarySpinner = findViewById(R.id.create_alarm_summary_spinner);
+        mMessageOptions = findViewById(R.id.rg_message_options);
+        mDate = findViewById(R.id.ev_create_alarm_date);
+        mTime = findViewById(R.id.ev_create_alarm_time);
+        mMessage = findViewById(R.id.ev_create_alarm_message);
         mDateTimeTable = findViewById(R.id.table_date_time);
         mBottomButton = findViewById(R.id.bt_create_alarm_main);
+    }
 
-        RadioGroup messageOptions = findViewById(R.id.rg_message_options);
-        messageOptions.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int radioButtonId) {
-                // Use the radio button id to change how the ui looks
-                isInstantText = radioButtonId == R.id.rb_instant_message;
-                redrawUI();
-            }
+    private void setupListeners() {
+        CheckBox cb = findViewById(R.id.cb_create_alarm_new_message);
+        cb.setOnCheckedChangeListener((buttonView, isChecked) -> createNewMessage = isChecked);
+
+        mMessageOptions.setOnCheckedChangeListener((group, radioButtonId) -> {
+            // Use the radio button id to change how the ui looks
+            isInstantText = radioButtonId == R.id.rb_instant_message;
+            redrawUI();
         });
 
         // Obtain the Extra from Main Activity
         if (getIntent().hasExtra(MainActivity.EXTRA_INSTANT_MESSAGE)) {
-            boolean isInstantText = getIntent().getBooleanExtra(MainActivity.EXTRA_INSTANT_MESSAGE, false);
+            isInstantText = getIntent().getBooleanExtra(MainActivity.EXTRA_INSTANT_MESSAGE, false);
             // Make sure the Instant Message Radio Button is selected
             if (isInstantText) {
-                messageOptions.check(R.id.rb_instant_message);
+                mMessageOptions.check(R.id.rb_instant_message);
             } else {
-                messageOptions.check(R.id.rb_delayed_message);
+                mMessageOptions.check(R.id.rb_delayed_message);
             }
             // UI is updated from OnCheckChangedListener
         }
 
         // Change click functionality of button depending on radio button
-        mBottomButton.setOnClickListener(new View.OnClickListener() {
+        mBottomButton.setOnClickListener(v -> {
+            if (isInstantText)
+                sendInstantText();
+            else
+                saveTextAlarm();
+        });
+
+        // Populate spinner with message summaries
+        MessageDataViewModel viewModel = new ViewModelProvider(this).get(MessageDataViewModel.class);
+        viewModel.getEntries().observe(this, new Observer<List<MessageDataEntry>>() {
             @Override
-            public void onClick(View v) {
-                if (isInstantText)
-                    sendInstantText();
-                else
-                    saveTextAlarm();
+            public void onChanged(List<MessageDataEntry> entries) {
+                viewModel.getEntries().removeObserver(this);
+                adapter = new ArrayAdapter<>(
+                        TextAlarmActivity.this, android.R.layout.simple_spinner_item,
+                        entries.toArray(new MessageDataEntry[0]));
+                mSummarySpinner.setAdapter(adapter);
+                // Enable spinner if User created messages
+                mSummarySpinner.setEnabled(!adapter.isEmpty());
+                // Create new message if there is no messages
+                cb.setChecked(adapter.isEmpty());
+
+                // Select the appropriate message
+                if (messageId != CreateMessageActivity.DEFAULT_MESSAGE_ID) {
+                    int messagePos = -1;
+                    // Find the proper position of the message id
+                    for (int i = 0; i < entries.size(); i++) {
+                        if (entries.get(i).getMessageId() == messageId) {
+                            messagePos = i;
+                            break;
+                        }
+                    }
+                    if (messagePos != -1) {
+                        mSummarySpinner.setSelection(messagePos);
+                    }
+                }
+            }
+        });
+
+        // Populate message data when an item is selected from dropdown
+        mSummarySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position,
+                                       long id) {
+                selectedMessage = (MessageDataEntry) parent.getItemAtPosition(position);
+                mSummary.setText(selectedMessage.getSummary());
+                mMessage.setText(selectedMessage.getMessage());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
     }
 
+    private boolean stringExtractionFailed() {
+        // Make sure all EditTexts are filled
+        if (isAllDataEmpty()) return true;
+
+        // Obtain the text from the boxes
+        fromText = mFrom.getText().toString();
+        summaryText = mSummary.getText().toString();
+        messageText = mMessage.getText().toString();
+
+        //TODO: Use a DatePicker and TimePicker to allow user to select dateTime easily
+        String dateTime = String.format("%s %s", mDate.getText().toString(),
+                mTime.getText().toString());
+        if (isInstantText) {
+            extractedDate = new Date(System.currentTimeMillis());
+        } else {
+            try {
+                extractedDate = dateTimeFormatter.parse(dateTime);
+            } catch (ParseException | NullPointerException e) {
+                if (BuildConfig.DEBUG) Log.e(TAG, "Exception when parsing data:\n", e);
+                extractedDate = Converters.DEFAULT_DATE;
+            }
+        }
+        return false;
+    }
+
     private void sendInstantText() {
-        Toast.makeText(this, "Extract message and send instantly", Toast.LENGTH_SHORT).show();
+        // Make sure data was extracted
+        if (stringExtractionFailed()) return;
+
+        saveMessage();
+
+        // TODO: Send Text message instantly
+        // sendText(from, message);
+        finish();
+    }
+
+    private void saveMessage() {
+        // Insert a new message or Update the selected message into proper table
+        if (!createNewMessage && selectedMessage == null)
+            selectedMessage = new MessageDataEntry(CreateMessageActivity.DEFAULT_MESSAGE_ID, summaryText, messageText);
+        else if (createNewMessage && selectedMessage != null)
+            selectedMessage = null;
+        selectedMessage = DatabaseManager.getInstance(this).insertOrUpdateMessage(selectedMessage, summaryText, messageText);
     }
 
     private void saveTextAlarm() {
-        Toast.makeText(this, "Extract message and date/time and save to DB. " +
-                "Create a text message to be sent at desired time", Toast.LENGTH_LONG).show();
+        // Make sure data was extracted
+        if (stringExtractionFailed()) return;
+
+        saveMessage();
+
+        // Insert or update the textAlarm
+        DatabaseManager.getInstance(this).insertOrUpdateAlarm(editedAlarm, extractedDate, fromText, selectedMessage);
+
+        // Return to calling Activity
+        finish();
     }
 
     private void redrawUI() {
@@ -75,7 +251,41 @@ public class TextAlarmActivity extends AppCompatActivity {
             mBottomButton.setText(R.string.send_instant_message_btn);
         } else {
             mDateTimeTable.setVisibility(View.VISIBLE);
-            mBottomButton.setText(R.string.save_message_btn);
+            mBottomButton.setText(R.string.save_text_alarm_btn);
+        }
+    }
+
+    private boolean isAllDataEmpty() {
+        String errorString = getString(R.string.generic_empty_error);
+        boolean dataInAll = isTextViewFilled(mFrom, errorString);
+        dataInAll &= isTextViewFilled(mSummary, errorString);
+        if (!isInstantText) {
+            dataInAll &= isTextViewFilled(mDate, errorString);
+            // No time field means 00:00 for HH:mm
+        }
+
+        dataInAll &= isTextViewFilled(mMessage, errorString);
+
+        return !dataInAll;
+    }
+
+    private boolean isTextViewFilled(TextView textView, String errorString) {
+        if (textView.getText().toString().isEmpty()) {
+            textView.setError(errorString);
+            return false;
+        }
+        return true;
+    }
+
+    private void populateUI() {
+        mFrom.setText(editedAlarm.getSenderInfo());
+        mSummary.setText(editedAlarm.getMessageData().getSummary());
+        mMessage.setText(editedAlarm.getMessageData().getMessage());
+        if (!isInstantText) {
+            String dateTime = dateTimeFormatter.format(editedAlarm.getDateTime());
+            String[] dateInfo = dateTime.split(" ");
+            mDate.setText(dateInfo[0]);
+            mTime.setText(dateInfo[1]);
         }
     }
 }
