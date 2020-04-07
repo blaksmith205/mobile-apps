@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements IChangeItem<TextA
         intent.putExtra(CreateMessageActivity.EXTRA_MESSAGE_DATA_ID, entry.getMessageData().getMessageId());
         intent.putExtra(CreateMessageActivity.EXTRA_MESSAGE_DATA_SUMMARY, entry.getMessageData().getSummary());
         intent.putExtra(CreateMessageActivity.EXTRA_MESSAGE_DATA_MESSAGE, entry.getMessageData().getMessage());
+        intent.putExtra(CreateMessageActivity.EXTRA_MESSAGE_DATA_TEMPLATE, entry.getMessageData().isTemplate());
         startActivity(intent);
     }
 

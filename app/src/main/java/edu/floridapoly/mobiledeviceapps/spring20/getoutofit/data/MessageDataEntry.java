@@ -15,6 +15,8 @@ public class MessageDataEntry {
     private String summary;
     // User entered message
     private String message;
+    // If the message is a template or not
+    private boolean template;
 
     @Ignore
     public MessageDataEntry(String summary, String message) {
@@ -22,10 +24,18 @@ public class MessageDataEntry {
         this.message = message;
     }
 
-    public MessageDataEntry(int messageId, String summary, String message) {
+    @Ignore
+    public MessageDataEntry(String summary, String message, boolean template) {
+        this.summary = summary;
+        this.message = message;
+        this.template = template;
+    }
+
+    public MessageDataEntry(int messageId, String summary, String message, boolean template) {
         this.messageId = messageId;
         this.summary = summary;
         this.message = message;
+        this.template = template;
     }
 
     public String getSummary() {
@@ -52,6 +62,14 @@ public class MessageDataEntry {
         this.messageId = messageId;
     }
 
+    public boolean isTemplate() {
+        return template;
+    }
+
+    public void setTemplate(boolean template) {
+        this.template = template;
+    }
+
     @NonNull
     @Override
     public String toString() {
@@ -65,7 +83,7 @@ public class MessageDataEntry {
         if (!(obj instanceof MessageDataEntry))
             return false;
         MessageDataEntry other = (MessageDataEntry) obj;
-        return other.getMessageId() == messageId && other.getSummary().equals(summary) &&
-                other.getMessage().equals(message);
+        return (other.getMessageId() == messageId) && (other.getSummary().equals(summary)) &&
+                (other.getMessage().equals(message)) && (other.isTemplate() == template);
     }
 }

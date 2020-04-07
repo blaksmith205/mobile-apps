@@ -11,6 +11,7 @@
     <string name="save_message_btn">Save Message</string>
     <string name="update_message_btn">Update Message</string>
     <string name="message_hint">Message</string>
+    <string name="create_message_template">Create Message as Template</string>
 
     <!--  TextAlarmActivity  -->
     <string name="from_label">From</string>

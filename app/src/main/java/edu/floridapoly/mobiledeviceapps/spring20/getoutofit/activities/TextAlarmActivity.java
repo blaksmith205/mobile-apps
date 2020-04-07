@@ -8,7 +8,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -46,6 +45,7 @@ public class TextAlarmActivity extends AppCompatActivity {
     private EditText mFrom;
     private EditText mSummary;
     private Spinner mSummarySpinner;
+    private CheckBox mCreateMessage;
     private RadioGroup mMessageOptions;
     private EditText mDate;
     private EditText mTime;
@@ -87,7 +87,8 @@ public class TextAlarmActivity extends AppCompatActivity {
             Date date = new Date(intent.getLongExtra(EXTRA_TEXT_ALARM_DATE, Converters.DEFAULT_DATE.getTime()));
             String messageDataSummary = intent.getStringExtra(CreateMessageActivity.EXTRA_MESSAGE_DATA_SUMMARY);
             String messageDataMessage = intent.getStringExtra(CreateMessageActivity.EXTRA_MESSAGE_DATA_MESSAGE);
-            editedAlarm = new TextAlarmEntry(textAlarmId, date, senderInfo, new MessageDataEntry(messageId, messageDataSummary, messageDataMessage));
+            boolean messageDataTemplate = intent.getBooleanExtra(CreateMessageActivity.EXTRA_MESSAGE_DATA_TEMPLATE, false);
+            editedAlarm = new TextAlarmEntry(textAlarmId, date, senderInfo, new MessageDataEntry(messageId, messageDataSummary, messageDataMessage, messageDataTemplate));
             // Populate the UI
             populateUI();
         } else {
@@ -100,6 +101,7 @@ public class TextAlarmActivity extends AppCompatActivity {
         mFrom = findViewById(R.id.ev_create_alarm_from);
         mSummary = findViewById(R.id.ev_create_alarm_summary);
         mSummarySpinner = findViewById(R.id.create_alarm_summary_spinner);
+        mCreateMessage = findViewById(R.id.cb_create_alarm_new_message);
         mMessageOptions = findViewById(R.id.rg_message_options);
         mDate = findViewById(R.id.ev_create_alarm_date);
         mTime = findViewById(R.id.ev_create_alarm_time);
@@ -109,8 +111,7 @@ public class TextAlarmActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        CheckBox cb = findViewById(R.id.cb_create_alarm_new_message);
-        cb.setOnCheckedChangeListener((buttonView, isChecked) -> createNewMessage = isChecked);
+        mCreateMessage.setOnCheckedChangeListener((buttonView, isChecked) -> createNewMessage = isChecked);
 
         mMessageOptions.setOnCheckedChangeListener((group, radioButtonId) -> {
             // Use the radio button id to change how the ui looks
@@ -127,7 +128,7 @@ public class TextAlarmActivity extends AppCompatActivity {
             } else {
                 mMessageOptions.check(R.id.rb_delayed_message);
             }
-            // UI is updated from OnCheckChangedListener
+            // UI is updated from mMessageOptions OnCheckChangedListener
         }
 
         // Change click functionality of button depending on radio button
@@ -151,7 +152,7 @@ public class TextAlarmActivity extends AppCompatActivity {
                 // Enable spinner if User created messages
                 mSummarySpinner.setEnabled(!adapter.isEmpty());
                 // Create new message if there is no messages
-                cb.setChecked(adapter.isEmpty());
+                mCreateMessage.setChecked(adapter.isEmpty());
 
                 // Select the appropriate message
                 if (messageId != CreateMessageActivity.DEFAULT_MESSAGE_ID) {
@@ -178,6 +179,11 @@ public class TextAlarmActivity extends AppCompatActivity {
                 selectedMessage = (MessageDataEntry) parent.getItemAtPosition(position);
                 mSummary.setText(selectedMessage.getSummary());
                 mMessage.setText(selectedMessage.getMessage());
+                mCreateMessage.setChecked(selectedMessage.isTemplate());
+                if (selectedMessage.isTemplate())
+                    mCreateMessage.setEnabled(false);
+                else
+                    mCreateMessage.setEnabled(true);
             }
 
             @Override
@@ -226,10 +232,10 @@ public class TextAlarmActivity extends AppCompatActivity {
     private void saveMessage() {
         // Insert a new message or Update the selected message into proper table
         if (!createNewMessage && selectedMessage == null)
-            selectedMessage = new MessageDataEntry(CreateMessageActivity.DEFAULT_MESSAGE_ID, summaryText, messageText);
+            selectedMessage = new MessageDataEntry(CreateMessageActivity.DEFAULT_MESSAGE_ID, summaryText, messageText, false);
         else if (createNewMessage && selectedMessage != null)
             selectedMessage = null;
-        selectedMessage = DatabaseManager.getInstance(this).insertOrUpdateMessage(selectedMessage, summaryText, messageText);
+        selectedMessage = DatabaseManager.getInstance(this).insertOrUpdateMessage(selectedMessage, summaryText, messageText, false);
     }
 
     private void saveTextAlarm() {

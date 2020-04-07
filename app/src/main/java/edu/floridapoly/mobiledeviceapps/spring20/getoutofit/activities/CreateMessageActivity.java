@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,12 +17,15 @@ public class CreateMessageActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE_DATA_ID = "PASSED_MESSAGE_DATA_ID";
     public static final String EXTRA_MESSAGE_DATA_SUMMARY = "PASSED_MESSAGE_DATA_SUMMARY";
     public static final String EXTRA_MESSAGE_DATA_MESSAGE = "PASSED_MESSAGE_DATA_MESSAGE";
+    public static final String EXTRA_MESSAGE_DATA_TEMPLATE = "PASSED_MESSAGE_DATA_TEMPLATE";
 
     // Constant for default message id to be used when not in update mode
     public static final int DEFAULT_MESSAGE_ID = -1;
 
     private EditText mSummary;
     private EditText mMessage;
+    private CheckBox mTemplateCB;
+    private boolean isTemplate;
     private MessageDataEntry messageData;
 
     @Override
@@ -32,6 +36,12 @@ public class CreateMessageActivity extends AppCompatActivity {
         mSummary = findViewById(R.id.ev_excuse_summary);
         mMessage = findViewById(R.id.ev_message);
         Button button = findViewById(R.id.bt_save_message);
+
+        // Setup listener for CheckBox
+        mTemplateCB = findViewById(R.id.cb_create_template_message);
+        mTemplateCB.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            isTemplate = isChecked;
+        });
 
         Intent intent = getIntent();
         if (intent == null) {
@@ -46,7 +56,8 @@ public class CreateMessageActivity extends AppCompatActivity {
             // Obtain the data
             String summary = intent.getStringExtra(EXTRA_MESSAGE_DATA_SUMMARY);
             String message = intent.getStringExtra(EXTRA_MESSAGE_DATA_MESSAGE);
-            messageData = new MessageDataEntry(mMessageId, summary, message);
+            boolean template = intent.getBooleanExtra(EXTRA_MESSAGE_DATA_TEMPLATE, false);
+            messageData = new MessageDataEntry(mMessageId, summary, message, template);
             // Populate the UI
             populateUI();
         }
@@ -67,7 +78,7 @@ public class CreateMessageActivity extends AppCompatActivity {
         }
 
         // Insert or Update the message
-        DatabaseManager.getInstance(this).insertOrUpdateMessage(messageData, summaryText, messageText);
+        DatabaseManager.getInstance(this).insertOrUpdateMessage(messageData, summaryText, messageText, isTemplate);
 
         // Return to calling Activity
         finish();
@@ -76,5 +87,6 @@ public class CreateMessageActivity extends AppCompatActivity {
     private void populateUI() {
         mSummary.setText(messageData.getSummary());
         mMessage.setText(messageData.getMessage());
+        mTemplateCB.setChecked(messageData.isTemplate());
     }
 }
