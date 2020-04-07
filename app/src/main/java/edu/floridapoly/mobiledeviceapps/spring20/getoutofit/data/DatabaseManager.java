@@ -14,7 +14,7 @@ import java.util.Date;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.BuildConfig;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.AppExecutors;
 
-@Database(entities = {MessageDataEntry.class, TextAlarmEntry.class}, version = 2, exportSchema = false)
+@Database(entities = {MessageDataEntry.class, TextAlarmEntry.class}, version = 3, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class DatabaseManager extends RoomDatabase {
     private static final String TAG = DatabaseManager.class.getSimpleName();
@@ -50,12 +50,13 @@ public abstract class DatabaseManager extends RoomDatabase {
      * @param messageData The MessageDataEntry instance. Insertion happens if null
      * @param newSummary  New summary to update the messageData with
      * @param newMessage  New message to update the messageData with
+     * @param isTemplate  Whether the new message is a template message
      * @return Created or Updated MessageDataEntry
      */
-    public MessageDataEntry insertOrUpdateMessage(MessageDataEntry messageData, String newSummary, String newMessage) {
+    public MessageDataEntry insertOrUpdateMessage(MessageDataEntry messageData, String newSummary, String newMessage, boolean isTemplate) {
         if (messageData == null) {
             // Insert into database
-            MessageDataEntry dataEntry = new MessageDataEntry(newSummary, newMessage);
+            MessageDataEntry dataEntry = new MessageDataEntry(newSummary, newMessage, isTemplate);
             AppExecutors.getInstance().diskIO().execute(() -> {
                 long id = sInstance.messageDataDao().insert(dataEntry);
                 dataEntry.setMessageId((int) id);
@@ -63,12 +64,14 @@ public abstract class DatabaseManager extends RoomDatabase {
             return dataEntry;
         } else {
             // Only update if user changed text
-            if (messageData.getSummary().equals(newSummary) && messageData.getMessage().equals(newMessage)) {
+            if (messageData.getSummary().equals(newSummary) && messageData.getMessage().equals(newMessage)
+                    && messageData.isTemplate() == isTemplate) {
                 return messageData; // Don't do anything
             }
             // Update database
             messageData.setSummary(newSummary);
             messageData.setMessage(newMessage);
+            messageData.setTemplate(isTemplate);
             AppExecutors.getInstance().diskIO().execute(() -> sInstance.messageDataDao().update(messageData));
             return messageData;
         }

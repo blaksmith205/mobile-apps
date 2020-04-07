@@ -1,6 +1,7 @@
 package edu.floridapoly.mobiledeviceapps.spring20.getoutofit.adapters;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,14 @@ public class ViewMessagesAdapter extends GeneralAdapter<MessageDataEntry, ViewMe
         holder.summaryView.setText(data.getSummary());
         holder.messageView.setText(data.getMessage());
 
+        // Set the templates to bold
+        if (data.isTemplate()) {
+            holder.summaryView.setTypeface(holder.summaryView.getTypeface(), Typeface.BOLD);
+            holder.messageView.setTypeface(holder.messageView.getTypeface(), Typeface.BOLD);
+        } else {
+            holder.summaryView.setTypeface(null, Typeface.NORMAL);
+            holder.messageView.setTypeface(null, Typeface.NORMAL);
+        }
         // Add the position of the TextAlarmData, in case it is needed again
         holder.summaryView.setTag(position);
     }

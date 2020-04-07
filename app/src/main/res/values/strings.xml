@@ -11,12 +11,15 @@
     <string name="save_message_btn">Save Message</string>
     <string name="update_message_btn">Update Message</string>
     <string name="message_hint">Message</string>
+    <string name="create_message_template">Create Message as Template</string>
+    <string name="update_template_rb">Update Template</string>
+    <string name="new_message_from_template_rb">Create New Message</string>
 
     <!--  TextAlarmActivity  -->
     <string name="from_label">From</string>
     <string name="message_label">Message</string>
     <string name="message_spinner_first_entry">Created Messages</string>
-    <string name="intant_message_rb">Instant Message</string>
+    <string name="instant_message_rb">Instant Message</string>
     <string name="timed_message_rb">Send on Date</string>
     <string name="date_label">Date</string>
     <string name="time_label">Time</string>

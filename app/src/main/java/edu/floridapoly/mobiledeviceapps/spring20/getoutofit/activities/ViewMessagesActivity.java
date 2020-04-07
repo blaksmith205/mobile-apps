@@ -84,6 +84,7 @@ public class ViewMessagesActivity extends AppCompatActivity implements IChangeIt
         intent.putExtra(CreateMessageActivity.EXTRA_MESSAGE_DATA_ID, data.getMessageId());
         intent.putExtra(CreateMessageActivity.EXTRA_MESSAGE_DATA_SUMMARY, data.getSummary());
         intent.putExtra(CreateMessageActivity.EXTRA_MESSAGE_DATA_MESSAGE, data.getMessage());
+        intent.putExtra(CreateMessageActivity.EXTRA_MESSAGE_DATA_TEMPLATE, data.isTemplate());
         startActivity(intent);
     }
 
