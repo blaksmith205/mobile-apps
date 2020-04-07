@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,7 +26,9 @@ public class CreateMessageActivity extends AppCompatActivity {
     private EditText mSummary;
     private EditText mMessage;
     private CheckBox mTemplateCB;
+    private RadioGroup mTemplateOptions;
     private boolean isTemplate;
+    private boolean updateTemplate;
     private MessageDataEntry messageData;
 
     @Override
@@ -43,6 +46,21 @@ public class CreateMessageActivity extends AppCompatActivity {
             isTemplate = isChecked;
         });
 
+        // Setup radioGroup
+        mTemplateOptions = findViewById(R.id.rg_template_options);
+        mTemplateOptions.setOnCheckedChangeListener((group, checkedId) -> {
+            switch (checkedId) {
+                case R.id.rb_new_message_from_template:
+                    updateTemplate = false;
+                    button.setText(getString(R.string.save_message_btn));
+                    break;
+                case R.id.rb_update_template:
+                    updateTemplate = true;
+                    button.setText(getString(R.string.update_template_rb));
+                    break;
+            }
+        });
+
         Intent intent = getIntent();
         if (intent == null) {
             return;
@@ -57,9 +75,13 @@ public class CreateMessageActivity extends AppCompatActivity {
             String summary = intent.getStringExtra(EXTRA_MESSAGE_DATA_SUMMARY);
             String message = intent.getStringExtra(EXTRA_MESSAGE_DATA_MESSAGE);
             boolean template = intent.getBooleanExtra(EXTRA_MESSAGE_DATA_TEMPLATE, false);
+            // isTemplate gets updated through populateUI
             messageData = new MessageDataEntry(mMessageId, summary, message, template);
             // Populate the UI
             populateUI();
+        } else {
+            // Hide the radiogroup
+            mTemplateOptions.setVisibility(View.GONE);
         }
     }
 
@@ -77,6 +99,12 @@ public class CreateMessageActivity extends AppCompatActivity {
             return;
         }
 
+        // create new message
+        if (!updateTemplate && isTemplate) {
+            messageData = null;
+            isTemplate = false;
+        }
+
         // Insert or Update the message
         DatabaseManager.getInstance(this).insertOrUpdateMessage(messageData, summaryText, messageText, isTemplate);
 
@@ -85,6 +113,16 @@ public class CreateMessageActivity extends AppCompatActivity {
     }
 
     private void populateUI() {
+        if (messageData == null)
+            return;
+        if (messageData.isTemplate()) {
+            // Hide the template creating checkbox
+            mTemplateCB.setVisibility(View.GONE);
+            // Select Create new message option
+            mTemplateOptions.check(R.id.rb_new_message_from_template);
+        } else {
+            mTemplateOptions.setVisibility(View.GONE);
+        }
         mSummary.setText(messageData.getSummary());
         mMessage.setText(messageData.getMessage());
         mTemplateCB.setChecked(messageData.isTemplate());

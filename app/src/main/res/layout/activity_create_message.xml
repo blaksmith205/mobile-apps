@@ -47,6 +47,29 @@
         android:layout_height="wrap_content"
         android:text="@string/create_message_template" />
 
+    <RadioGroup
+        android:id="@+id/rg_template_options"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/rb_new_message_from_template"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/new_message_from_template_rb" />
+
+        <RadioButton
+            android:id="@+id/rb_update_template"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/update_template_rb" />
+
+    </RadioGroup>
+
     <EditText
         android:id="@+id/ev_message"
         style="@android:style/Widget.DeviceDefault.EditText"
