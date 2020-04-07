@@ -13,7 +13,8 @@ import java.util.List;
 @Dao
 public interface MessageDataDao {
 
-    @Query("SELECT * FROM message_data")
+    // Obtain the messages with the templates first, then sorted alphabetically by summary
+    @Query("SELECT * FROM message_data ORDER BY template DESC, summary ASC")
     LiveData<List<MessageDataEntry>> loadMessages();
 
     @Query("SELECT * FROM message_data WHERE messageId = :id")
