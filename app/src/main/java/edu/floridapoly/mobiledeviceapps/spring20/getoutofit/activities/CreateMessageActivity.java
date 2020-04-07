@@ -27,8 +27,10 @@ public class CreateMessageActivity extends AppCompatActivity {
     private EditText mMessage;
     private CheckBox mTemplateCB;
     private RadioGroup mTemplateOptions;
+    private int mMessageId;
     private boolean isTemplate;
-    private boolean updateTemplate;
+    private boolean createMessageFromTemplate;
+    private boolean updateMessage;
     private MessageDataEntry messageData;
 
     @Override
@@ -51,11 +53,11 @@ public class CreateMessageActivity extends AppCompatActivity {
         mTemplateOptions.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId) {
                 case R.id.rb_new_message_from_template:
-                    updateTemplate = false;
+                    createMessageFromTemplate = false;
                     button.setText(getString(R.string.save_message_btn));
                     break;
                 case R.id.rb_update_template:
-                    updateTemplate = true;
+                    createMessageFromTemplate = true;
                     button.setText(getString(R.string.update_template_rb));
                     break;
             }
@@ -66,7 +68,7 @@ public class CreateMessageActivity extends AppCompatActivity {
             return;
         }
         // Get message id if one exists
-        int mMessageId = intent.getIntExtra(EXTRA_MESSAGE_DATA_ID, DEFAULT_MESSAGE_ID);
+        mMessageId = intent.getIntExtra(EXTRA_MESSAGE_DATA_ID, DEFAULT_MESSAGE_ID);
 
         // Check for update id
         if (mMessageId != DEFAULT_MESSAGE_ID) {
@@ -75,6 +77,7 @@ public class CreateMessageActivity extends AppCompatActivity {
             String summary = intent.getStringExtra(EXTRA_MESSAGE_DATA_SUMMARY);
             String message = intent.getStringExtra(EXTRA_MESSAGE_DATA_MESSAGE);
             boolean template = intent.getBooleanExtra(EXTRA_MESSAGE_DATA_TEMPLATE, false);
+            updateMessage =  !template;
             // isTemplate gets updated through populateUI
             messageData = new MessageDataEntry(mMessageId, summary, message, template);
             // Populate the UI
@@ -99,10 +102,12 @@ public class CreateMessageActivity extends AppCompatActivity {
             return;
         }
 
-        // create new message
-        if (!updateTemplate && isTemplate) {
-            messageData = null;
-            isTemplate = false;
+        if (!updateMessage) {
+            // Create a non-template message from a template. This means a template was selected to edit
+            if (!createMessageFromTemplate && isTemplate && mMessageId != DEFAULT_MESSAGE_ID) {
+                messageData = null;
+                isTemplate = false;
+            }
         }
 
         // Insert or Update the message
