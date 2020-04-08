@@ -67,7 +67,7 @@
 
             <Spinner
                 android:id="@+id/create_alarm_summary_spinner"
-                style="@android:style/Widget.Holo.Spinner"
+                style="@android:style/Widget.Material.Spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
