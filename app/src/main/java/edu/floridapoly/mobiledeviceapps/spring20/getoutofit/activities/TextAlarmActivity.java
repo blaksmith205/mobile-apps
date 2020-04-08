@@ -31,6 +31,7 @@ import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.DatabaseManager
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.MessageDataEntry;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.MessageDataViewModel;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.TextAlarmEntry;
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.TextMessenger;
 
 public class TextAlarmActivity extends AppCompatActivity {
     public static final String EXTRA_TEXT_ALARM_ID = "PASSED_TEXT_ALARM_ID";
@@ -225,7 +226,7 @@ public class TextAlarmActivity extends AppCompatActivity {
         saveMessage();
 
         // TODO: Send Text message instantly
-        // sendText(from, message);
+        TextMessenger.sendText(fromText, messageText);
         finish();
     }
 

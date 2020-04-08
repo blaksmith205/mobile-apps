@@ -1,12 +1,17 @@
 package edu.floridapoly.mobiledeviceapps.spring20.getoutofit.activities;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.PermissionChecker;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -31,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements IChangeItem<TextA
 
     public static final String EXTRA_INSTANT_MESSAGE = "INSTANT_MESSAGE";
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final int SMS_SEND_REQUEST_ID = 557;
 
     private RecyclerView mRecyclerView;
     private TextAlarmAdapter mAdapter;
@@ -65,12 +71,23 @@ public class MainActivity extends AppCompatActivity implements IChangeItem<TextA
         populateDatabase();
         // Display real data from database
         setupViewModel();
+
+        // Request permissions to send sms
+        if (!hasPermissions()) {
+            if (BuildConfig.DEBUG) Log.d(TAG, "Send SMS permission was not granted");
+            requestPermissions();
+        }
     }
 
     @Override
     protected void onDestroy() {
         viewModel.getEntries().removeObserver(dataObserver);
         super.onDestroy();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     public void viewMessageButton(View view) {
@@ -128,6 +145,23 @@ public class MainActivity extends AppCompatActivity implements IChangeItem<TextA
             });
             editor.putBoolean(firstOpenedKey, false);
             editor.apply();
+        }
+    }
+
+    private boolean hasPermissions() {
+        return PermissionChecker.checkSelfPermission(this, Manifest.permission.SEND_SMS)
+                == PermissionChecker.PERMISSION_GRANTED;
+    }
+
+    private void requestPermissions() {
+        PackageManager pm = getPackageManager();
+        int hasSmsSendPerm = pm.checkPermission(Manifest.permission.READ_PHONE_STATE, "edu.floridapoly.mobiledeviceapps.spring20.getoutofit");
+        // Check if phone state permission was not granted
+        if (hasSmsSendPerm == PackageManager.PERMISSION_DENIED) {
+            // Request permissions
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.SEND_SMS},
+                    SMS_SEND_REQUEST_ID);
         }
     }
 }
