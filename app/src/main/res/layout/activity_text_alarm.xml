@@ -22,15 +22,18 @@
                 android:layout_height="wrap_content"
                 android:text="@string/from_label" />
 
-            <EditText
+            <Spinner
                 android:id="@+id/ev_create_alarm_from"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
+                android:enabled="false"
+                android:entries="@array/available_numbers"
                 android:hint="@string/from_label"
                 android:inputType="textPersonName"
                 android:singleLine="true"
+                android:spinnerMode="dropdown"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small" />
         </TableRow>
 

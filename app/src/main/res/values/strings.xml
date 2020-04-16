@@ -16,7 +16,7 @@
     <string name="new_message_from_template_rb">Create New Message</string>
 
     <!--  TextAlarmActivity  -->
-    <string name="from_label">YOUR PHONENUMBER</string>
+    <string name="from_label">From</string>
     <string name="message_label">Message</string>
     <string name="message_spinner_first_entry">Created Messages</string>
     <string name="instant_message_rb">Instant Message</string>
@@ -44,4 +44,9 @@
 
     <!--  Shared Preference Keys  -->
     <string name="sp_key_first_opened">FIRST_TIME_OPENING_APP</string>
+
+    <!--  Phone Numbers  -->
+    <string-array name="available_numbers">
+        <item>"+18509403946"</item>
+    </string-array>
 </resources>

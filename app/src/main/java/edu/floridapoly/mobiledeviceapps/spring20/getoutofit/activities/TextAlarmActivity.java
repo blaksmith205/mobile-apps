@@ -43,7 +43,7 @@ public class TextAlarmActivity extends AppCompatActivity {
     private static final String TAG = TextAlarmEntry.class.getSimpleName();
     private static final DateFormat dateTimeFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm");
 
-    private EditText mFrom;
+    private Spinner mFrom;
     private EditText mSummary;
     private Spinner mSummarySpinner;
     private CheckBox mCreateMessage;
@@ -199,7 +199,7 @@ public class TextAlarmActivity extends AppCompatActivity {
         if (isAllDataEmpty()) return true;
 
         // Obtain the text from the boxes
-        fromText = mFrom.getText().toString();
+        fromText = mFrom.getSelectedItem().toString();
         summaryText = mSummary.getText().toString();
         messageText = mMessage.getText().toString();
 
@@ -226,7 +226,8 @@ public class TextAlarmActivity extends AppCompatActivity {
         saveMessage();
 
         // TODO: Send Text message instantly
-        TextMessenger.sendText(fromText, messageText);
+        TextMessenger messenger = new TextMessenger();
+        messenger.sendText(fromText, messageText);
         finish();
     }
 
@@ -264,8 +265,7 @@ public class TextAlarmActivity extends AppCompatActivity {
 
     private boolean isAllDataEmpty() {
         String errorString = getString(R.string.generic_empty_error);
-        boolean dataInAll = isTextViewFilled(mFrom, errorString);
-        dataInAll &= isTextViewFilled(mSummary, errorString);
+        boolean dataInAll = isTextViewFilled(mSummary, errorString);
         if (!isInstantText) {
             dataInAll &= isTextViewFilled(mDate, errorString);
             // No time field means 00:00 for HH:mm
@@ -285,7 +285,9 @@ public class TextAlarmActivity extends AppCompatActivity {
     }
 
     private void populateUI() {
-        mFrom.setText(editedAlarm.getSenderInfo());
+        // TODO: Select correct number when user edits a TextAlarmEntry
+        // TODO: Show the mapped values from user defined contact to the available numbers
+        //mFrom.setSelection(mFrom.getSelectedItemPosition());
         mSummary.setText(editedAlarm.getMessageData().getSummary());
         mMessage.setText(editedAlarm.getMessageData().getMessage());
         if (!isInstantText) {
