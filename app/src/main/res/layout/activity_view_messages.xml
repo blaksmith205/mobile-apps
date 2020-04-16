@@ -19,6 +19,7 @@
         android:clickable="true"
         android:focusable="true"
         android:onClick="createMessageButton"
+        android:tint="@android:color/background_light"
         app:maxImageSize="@dimen/floating_button_image_size"
         app:srcCompat="@android:drawable/ic_input_add" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

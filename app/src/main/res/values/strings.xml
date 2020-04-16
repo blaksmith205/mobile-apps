@@ -31,8 +31,7 @@
     <string name="create_new_message_cb">Create New Message</string>
 
     <!--  Strings to format in code  -->
-    <string name="formatted_date">Date: %1$s</string>
-    <string name="formatted_time">Time: %1$s</string>
+    <string name="formatted_date">Receive on: %1$s</string>
     <string name="formatted_from">From: %1$s</string>
     <string name="formatted_message_summary">Summary: %1$s</string>
     <string name="formatted_message">Message: %1$s</string>

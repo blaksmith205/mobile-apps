@@ -17,8 +17,10 @@ import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.IChangeItem;
 
 public class TextAlarmAdapter extends GeneralAdapter<TextAlarmEntry, TextAlarmAdapter.TextAlarmViewHolder> {
 
+    private Context mContext;
     public TextAlarmAdapter(Context context, IChangeItem<TextAlarmEntry> touchHandler) {
         super(context, touchHandler);
+        this.mContext = context;
     }
 
     /**
@@ -43,14 +45,15 @@ public class TextAlarmAdapter extends GeneralAdapter<TextAlarmEntry, TextAlarmAd
     @Override
     public void onBindViewHolder(@NonNull TextAlarmViewHolder holder, int position) {
         TextAlarmEntry entry = mEntries.get(position);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
 
         // Set the data in the TextViews
-        holder.dateView.setText(dateFormat.format(entry.getDateTime()));
-        holder.timeView.setText(timeFormat.format(entry.getDateTime()));
-        holder.fromView.setText(entry.getSenderInfo());
-        holder.summaryView.setText(entry.getMessageData().getSummary());
+        String dateString = String.format(mContext.getString(R.string.formatted_date), dateFormat.format(entry.getDateTime()));
+        String fromString = String.format(mContext.getString(R.string.formatted_from), entry.getSenderInfo());
+        String summaryString = String.format(mContext.getString(R.string.formatted_message_summary), entry.getMessageData().getSummary());
+        holder.dateView.setText(dateString);
+        holder.fromView.setText(fromString);
+        holder.summaryView.setText(summaryString);
 
         // Add the position of the TextAlarmData, in case it is needed again
         holder.dateView.setTag(position);
@@ -59,7 +62,6 @@ public class TextAlarmAdapter extends GeneralAdapter<TextAlarmEntry, TextAlarmAd
     class TextAlarmViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView dateView;
-        TextView timeView;
         TextView fromView;
         TextView summaryView;
 
@@ -67,7 +69,6 @@ public class TextAlarmAdapter extends GeneralAdapter<TextAlarmEntry, TextAlarmAd
             super(itemView);
 
             dateView = itemView.findViewById(R.id.tv_text_alarm_rv_date);
-            timeView = itemView.findViewById(R.id.tv_text_alarm_rv_time);
             fromView = itemView.findViewById(R.id.tv_text_alarm_rv_from);
             summaryView = itemView.findViewById(R.id.tv_text_alarm_rv_summary);
 

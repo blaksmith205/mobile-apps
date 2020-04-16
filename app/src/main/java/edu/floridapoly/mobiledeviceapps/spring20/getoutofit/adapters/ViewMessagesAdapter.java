@@ -43,9 +43,11 @@ public class ViewMessagesAdapter extends GeneralAdapter<MessageDataEntry, ViewMe
     public void onBindViewHolder(@NonNull ViewMessagesAdapter.ViewMessagesViewHolder holder, int position) {
         MessageDataEntry data = mEntries.get(position);
 
+        String summaryString = String.format(mContext.getString(R.string.formatted_message_summary), data.getSummary());
+        String messageString = String.format(mContext.getString(R.string.formatted_message), data.getMessage());
         // Set the data in the TextViews
-        holder.summaryView.setText(data.getSummary());
-        holder.messageView.setText(data.getMessage());
+        holder.summaryView.setText(summaryString);
+        holder.messageView.setText(messageString);
 
         // Set the templates to bold
         if (data.isTemplate()) {
