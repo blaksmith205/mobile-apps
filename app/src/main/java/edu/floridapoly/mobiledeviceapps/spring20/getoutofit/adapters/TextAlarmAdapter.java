@@ -18,6 +18,7 @@ import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.IChangeItem;
 public class TextAlarmAdapter extends GeneralAdapter<TextAlarmEntry, TextAlarmAdapter.TextAlarmViewHolder> {
 
     private Context mContext;
+
     public TextAlarmAdapter(Context context, IChangeItem<TextAlarmEntry> touchHandler) {
         super(context, touchHandler);
         this.mContext = context;

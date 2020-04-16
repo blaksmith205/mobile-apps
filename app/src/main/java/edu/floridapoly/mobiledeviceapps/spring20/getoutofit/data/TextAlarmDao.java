@@ -23,7 +23,7 @@ public interface TextAlarmDao {
     TextAlarmEntry loadById(int id);
 
     @Insert
-    void insert(TextAlarmEntry textAlarm);
+    long insert(TextAlarmEntry textAlarm);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void update(TextAlarmEntry textAlarm);

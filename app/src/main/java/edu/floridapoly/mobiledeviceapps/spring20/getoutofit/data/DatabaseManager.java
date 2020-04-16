@@ -93,7 +93,10 @@ public abstract class DatabaseManager extends RoomDatabase {
         if (textAlarm == null) {
             // Insert into database
             final TextAlarmEntry newAlarm = new TextAlarmEntry(newDate, newSenderInfo, newMessageData);
-            AppExecutors.getInstance().diskIO().execute(() -> sInstance.textAlarmDao().insert(newAlarm));
+            AppExecutors.getInstance().diskIO().execute(() -> {
+                long id = sInstance.textAlarmDao().insert(newAlarm);
+                newAlarm.setAlarmId((int) id);
+            });
             return newAlarm;
         } else {
             // Only update if user changed information

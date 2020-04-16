@@ -31,6 +31,7 @@ import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.DatabaseManager
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.MessageDataEntry;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.MessageDataViewModel;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.data.TextAlarmEntry;
+import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.TextAlarmReceiver;
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.helpers.TextMessenger;
 
 public class TextAlarmActivity extends AppCompatActivity {
@@ -39,7 +40,7 @@ public class TextAlarmActivity extends AppCompatActivity {
     public static final String EXTRA_TEXT_ALARM_DATE = "PASSED_TEXT_ALARM_DATE";
 
     // Constant for default message id to be used when not in update mode
-    private static final int DEFAULT_TEXT_ALARM_ID = -1;
+    public static final int DEFAULT_TEXT_ALARM_ID = -1;
     private static final String TAG = TextAlarmEntry.class.getSimpleName();
     private static final DateFormat dateTimeFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm");
 
@@ -247,7 +248,11 @@ public class TextAlarmActivity extends AppCompatActivity {
         saveMessage();
 
         // Insert or update the textAlarm
-        DatabaseManager.getInstance(this).insertOrUpdateAlarm(editedAlarm, extractedDate, fromText, selectedMessage);
+        editedAlarm = DatabaseManager.getInstance(this).insertOrUpdateAlarm(editedAlarm, extractedDate, fromText, selectedMessage);
+
+        // Send alarm at desired time
+        TextAlarmReceiver receiver = new TextAlarmReceiver();
+        receiver.setTextAlarm(this, extractedDate, editedAlarm);
 
         // Return to calling Activity
         finish();
