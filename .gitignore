@@ -1,3 +1,6 @@
+# Temporarily prevent commit of Twilio info
+*/TextMessenger.java
+
 # Generated with Android Studio
 *.iml
 .gradle
