@@ -1,5 +1,8 @@
 package edu.floridapoly.mobiledeviceapps.spring20.getoutofit.activities;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +16,7 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
@@ -21,7 +25,9 @@ import androidx.lifecycle.ViewModelProvider;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import edu.floridapoly.mobiledeviceapps.spring20.getoutofit.BuildConfig;
@@ -43,14 +49,19 @@ public class TextAlarmActivity extends AppCompatActivity {
     public static final int DEFAULT_TEXT_ALARM_ID = -1;
     private static final String TAG = TextAlarmEntry.class.getSimpleName();
     private static final DateFormat dateTimeFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+    // date/time selection
+    private static int DATE_DIALOG_ID = 999;
+    private static int TIME_DIALOG_ID = 1000;
+    private Calendar calendar;
+    private int year, month, day, hour, minute;
 
     private Spinner mFrom;
     private EditText mSummary;
     private Spinner mSummarySpinner;
     private CheckBox mCreateMessage;
     private RadioGroup mMessageOptions;
-    private EditText mDate;
-    private EditText mTime;
+    private TextView mDate;
+    private TextView mTime;
     private EditText mMessage;
 
     // Extracted Strings from EditTexts
@@ -96,6 +107,29 @@ public class TextAlarmActivity extends AppCompatActivity {
         } else {
             if (BuildConfig.DEBUG) Log.d(TAG, "Failed to populate UI");
         }
+
+        // Date/time selection
+        calendar = Calendar.getInstance();
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+        setDate(year, month, day);
+        hour = calendar.get(Calendar.HOUR_OF_DAY);
+        minute = calendar.get(Calendar.MINUTE) + 1;
+        setTime(hour, minute);
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        // TODO Auto-generated method stub
+        if (id == DATE_DIALOG_ID) {
+            return new DatePickerDialog(this,
+                    dateSetListener, year, month, day);
+        }
+        if (id == TIME_DIALOG_ID) {
+            return new TimePickerDialog(this, timeSetListener, hour, minute, true);
+        }
+        return null;
     }
 
     private void referenceObjects() {
@@ -192,6 +226,14 @@ public class TextAlarmActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
+        });
+
+        mDate.setOnClickListener(v -> {
+            showDialog(DATE_DIALOG_ID);
+        });
+
+        mTime.setOnClickListener(v -> {
+            showDialog(TIME_DIALOG_ID);
         });
     }
 
@@ -301,5 +343,23 @@ public class TextAlarmActivity extends AppCompatActivity {
             mDate.setText(dateInfo[0]);
             mTime.setText(dateInfo[1]);
         }
+    }
+
+    private DatePickerDialog.OnDateSetListener dateSetListener = (view, year, month, dayOfMonth) -> setDate(year, month, dayOfMonth);
+    private TimePickerDialog.OnTimeSetListener timeSetListener = (view, hourOfDay, minute) -> setTime(hourOfDay, minute);
+
+    private void setDate(int year, int month, int day) {
+        this.year = year;
+        this.month = month;
+        this.day = day;
+        Date tempDate = new GregorianCalendar(year, month, day).getTime();
+        mDate.setText(new SimpleDateFormat("MM/dd/yyyy").format(tempDate));
+    }
+
+    private void setTime(int hourOfDay, int minute) {
+        this.hour = hourOfDay;
+        this.minute = minute;
+        Date tempDate = new GregorianCalendar(year, month, day, hourOfDay, minute).getTime();
+        mTime.setText(new SimpleDateFormat("HH:mm").format(tempDate));
     }
 }

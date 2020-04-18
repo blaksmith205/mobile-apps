@@ -123,15 +123,16 @@
                 android:gravity="center|left"
                 android:text="@string/date_label" />
 
-            <EditText
+            <TextView
                 android:id="@+id/ev_create_alarm_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
                 android:hint="@string/date_hint"
-                android:inputType="date"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+                android:inputType="date|datetime"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textSize="18sp" />
 
         </TableRow>
 
@@ -148,7 +149,7 @@
                 android:gravity="center|left"
                 android:text="@string/time_label" />
 
-            <EditText
+            <TextView
                 android:id="@+id/ev_create_alarm_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -156,7 +157,8 @@
                 android:ems="10"
                 android:hint="@string/time_hint"
                 android:inputType="time"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textSize="18sp" />
         </TableRow>
 
     </TableLayout>
